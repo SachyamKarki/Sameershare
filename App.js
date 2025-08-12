@@ -1,10 +1,18 @@
-import { View, Text } from 'react-native'
-import StackNavigator from './navigation/StackNavigator'
+import 'react-native-get-random-values';  
+import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import TabNavigator, { navigationRef } from './navigation';
+import { AlarmProvider } from './components/AlarmContext';
 
-const App = () => {
+export default function App() {
   return (
-    <StackNavigator />
-  )
-}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+  <NavigationContainer ref={navigationRef}>
+    <AlarmProvider>
+      <TabNavigator />
+    </AlarmProvider>
+  </NavigationContainer>
+</GestureHandlerRootView>
 
-export default App
+  );
+}
