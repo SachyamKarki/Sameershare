@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,62 +7,85 @@ import {
   TextInput,
   Alert,
   Keyboard,
-} from 'react-native';
-import { Audio } from 'expo-av';
-import Slider from '@react-native-community/slider';
-import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
-import { useAlarm } from '../components/AlarmContext';
-import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+  Animated,
+  Pressable,
+} from "react-native";
+import { Audio } from "expo-av";
+import Slider from "@react-native-community/slider";
+import { FontAwesome, MaterialIcons, Entypo } from "@expo/vector-icons";
+import { useAlarm } from "../components/AlarmContext";
+import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as DocumentPicker from "expo-document-picker";
+import { v4 as uuidv4 } from "uuid";
+import * as FileSystem from "expo-file-system";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function RecordingsScreen() {
   const navigation = useNavigation();
-  const { recordings: originalRecordings, deleteRecording } = useAlarm();
+  const { deleteRecording, addRecording } = useAlarm();
 
-  // Local state with durations loaded
   const [recordings, setRecordings] = useState([]);
   const [customNames, setCustomNames] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [expandedId, setExpandedId] = useState(null);
-
   const [sound, setSound] = useState(null);
   const [playingUri, setPlayingUri] = useState(null);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [hasFinished, setHasFinished] = useState(false);
 
   const intervalRef = useRef(null);
+  const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  // Load durations for recordings if missing
+  const STORAGE_KEY = "@recordings_list";
+
+  // Load from storage on mount
   useEffect(() => {
-    const loadDurations = async () => {
-      const updated = await Promise.all(
-        originalRecordings.map(async (rec) => {
-          if (!rec.duration) {
-            try {
-              const { sound, status } = await Audio.Sound.createAsync({ uri: rec.audioUri });
-              await sound.unloadAsync();
-              return { ...rec, duration: status.durationMillis || 0 };
-            } catch {
-              return rec;
-            }
-          }
-          return rec;
-        })
-      );
-      setRecordings(updated);
-    };
-    loadDurations();
-  }, [originalRecordings]);
+    (async () => {
+      try {
+        const saved = await AsyncStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setRecordings(parsed);
+        }
+      } catch (e) {
+        console.error("Error loading saved recordings:", e);
+      }
+    })();
+  }, []);
 
-  // Stop and unload current sound (utility)
+  // Save to storage whenever recordings change
+  const persistRecordings = async (updated) => {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    } catch (e) {
+      console.error("Error saving recordings:", e);
+    }
+  };
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.85,
+      useNativeDriver: true,
+    }).start();
+  };
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 3,
+      useNativeDriver: true,
+    }).start();
+    handlePickAudio();
+  };
+
   const stopAndUnloadSound = async () => {
     if (sound) {
       try {
         await sound.stopAsync();
         await sound.unloadAsync();
-      } catch (e) {
-        // ignore errors if already stopped
-      }
+      } catch {}
       clearInterval(intervalRef.current);
       setSound(null);
       setPlayingUri(null);
@@ -71,113 +94,138 @@ export default function RecordingsScreen() {
     }
   };
 
-  // Play or pause audio by URI
   const handlePlayPause = async (uri) => {
-    if (playingUri !== uri) {
-      await stopAndUnloadSound();
-      setExpandedId(uri);
+    try {
+      if (playingUri !== uri || hasFinished) {
+        setHasFinished(false);
+        await stopAndUnloadSound();
+        setExpandedId(uri);
 
-      const { sound: newSound, status } = await Audio.Sound.createAsync({ uri });
-      setSound(newSound);
-      setPlayingUri(uri);
-      setDuration(status.durationMillis || 0);
-      setPosition(0);
+        await Audio.setAudioModeAsync({
+          allowsRecordingIOS: false,
+          playsInSilentModeIOS: true,
+          shouldDuckAndroid: false,
+          playThroughEarpieceAndroid: false,
+          staysActiveInBackground: true,
+        });
 
-      await newSound.playAsync();
+        const { sound: newSound, status } = await Audio.Sound.createAsync(
+          { uri },
+          { shouldPlay: true }
+        );
 
-      intervalRef.current = setInterval(async () => {
-        const status = await newSound.getStatusAsync();
+        setSound(newSound);
+        setPlayingUri(uri);
+        setIsPlayingAudio(true);
+        setDuration(status.durationMillis || 0);
         setPosition(status.positionMillis || 0);
-      }, 300);
 
-      newSound.setOnPlaybackStatusUpdate((status) => {
-        if (status.didJustFinish) {
-          setPlayingUri(null);
-          clearInterval(intervalRef.current);
+        intervalRef.current = setInterval(async () => {
+          const s = await newSound.getStatusAsync();
+          setPosition(s.positionMillis || 0);
+        }, 300);
+
+        newSound.setOnPlaybackStatusUpdate((s) => {
+          if (s.didJustFinish) {
+            setIsPlayingAudio(false);
+            setHasFinished(true);
+            stopAndUnloadSound();
+          }
+        });
+      } else if (sound) {
+        const status = await sound.getStatusAsync();
+        if (status.isPlaying) {
+          await sound.pauseAsync();
+          setIsPlayingAudio(false);
+        } else {
+          await sound.playAsync();
+          setIsPlayingAudio(true);
         }
-      });
-      return;
-    }
-
-    if (sound) {
-      const status = await sound.getStatusAsync();
-      if (status.isPlaying) {
-        await sound.pauseAsync();
-      } else {
-        await sound.playAsync();
       }
+    } catch (err) {
+      console.error("Playback error:", err);
+      Alert.alert("Error", "Could not play audio file.");
     }
   };
 
-  // Handle clicking row (open controls without playing audio)
-  const handleRowPress = async (uri) => {
-    Keyboard.dismiss();
-
-    if (expandedId === uri) {
-      setExpandedId(null);
-      await stopAndUnloadSound();
-    } else {
-      await stopAndUnloadSound();
-      setExpandedId(uri);
-    }
-    setEditingId(null);
-  };
-
-  // Handle long press to rename
-  const handleLongPress = (id) => {
-    setEditingId(id);
-    setExpandedId(null);
-  };
-
-  // Save renamed name
-  const saveName = (id, newName) => {
-    if (newName.trim() !== '') {
-      setCustomNames((prev) => ({ ...prev, [id]: newName.trim() }));
-    }
-    setEditingId(null);
-  };
-
-  // Handle slider seek
-  const handleSeek = async (value) => {
-    if (sound) {
-      await sound.setPositionAsync(value);
-      setPosition(value);
-    }
-  };
-
-  // Delete recording
   const handleDelete = (id, uri) => {
     Alert.alert(
-      'Delete Recording',
-      'This will also remove alarms using this recording. Continue?',
+      "Delete Recording",
+      "This will also remove alarms using this recording. Continue?",
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: "Cancel", style: "cancel" },
         {
-          text: 'Delete',
-          style: 'destructive',
+          text: "Delete",
+          style: "destructive",
           onPress: async () => {
             if (playingUri === uri && sound) {
               await stopAndUnloadSound();
             }
+            const updated = recordings.filter((r) => r.id !== id);
+            setRecordings(updated);
+            persistRecordings(updated);
             deleteRecording(id);
-
-            if (editingId === id) setEditingId(null);
-            if (expandedId === uri) setExpandedId(null);
-
-            setRecordings((prev) => prev.filter((r) => r.id !== id));
           },
         },
       ]
     );
   };
 
+  const handlePickAudio = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: "audio/*",
+        copyToCacheDirectory: true,
+      });
+
+      if (result.canceled) return;
+
+      const file = result.assets[0];
+      const newFileName = `${uuidv4()}-${file.name}`;
+      const persistentUri = `${FileSystem.documentDirectory}${newFileName}`;
+      await FileSystem.copyAsync({ from: file.uri, to: persistentUri });
+
+      const { sound, status } = await Audio.Sound.createAsync({
+        uri: persistentUri,
+      });
+
+      if (status.durationMillis > 300000) {
+        await sound.unloadAsync();
+        Alert.alert(
+          "Audio Too Long",
+          "Please select an audio file less than 5 minutes."
+        );
+        return;
+      }
+
+      await sound.unloadAsync();
+
+      const now = Date.now();
+      const randomId = `${uuidv4()}-${now}`;
+
+      const newRecording = {
+        id: randomId,
+        audioUri: persistentUri,
+        duration: status.durationMillis || 0,
+        uploadedAt: now,
+      };
+
+      const updated = [...recordings, newRecording];
+      setRecordings(updated);
+      persistRecordings(updated);
+      addRecording(newRecording);
+    } catch (err) {
+      // console.error("Error picking audio:", err);
+    }
+  };
+
   const formatTime = (ms) => {
-    if (!ms) return '00:00';
+    if (!ms) return "00:00";
     const totalSeconds = Math.floor(ms / 1000);
     const mins = Math.floor(totalSeconds / 60)
       .toString()
-      .padStart(2, '0');
-    const secs = (totalSeconds % 60).toString().padStart(2, '0');
+      .padStart(2, "0");
+    const secs = (totalSeconds % 60).toString().padStart(2, "0");
     return `${mins}:${secs}`;
   };
 
@@ -187,30 +235,41 @@ export default function RecordingsScreen() {
     const isEditing = editingId === item.id;
 
     return (
-      <View style={{ marginBottom: 12 , marginTop:8}}>
-        {/* Top Row */}
+      <View style={{ marginBottom: 12, marginTop: 8 }}>
         <TouchableOpacity
           onPress={() => {
-            if (!isEditing) handleRowPress(item.audioUri);
+            if (!isEditing) setExpandedId(isExpanded ? null : item.audioUri);
           }}
-          onLongPress={() => handleLongPress(item.id)}
+          onLongPress={() => setEditingId(item.id)}
           activeOpacity={0.7}
-          className="bg-gray-800 rounded-xl p-3 mb-0 flex-row items-center justify-between"
+          style={{
+            backgroundColor: "black",
+            borderRadius: 12,
+            padding: 12,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
         >
-          {/* Title or editing input */}
           {isEditing ? (
             <TextInput
               style={{
-                color: 'white',
+                color: "white",
                 fontSize: 18,
-                fontWeight: 'bold',
-                borderBottomColor: 'black',
+                fontWeight: "bold",
+                borderBottomColor: "#555",
                 borderBottomWidth: 1,
                 paddingVertical: 2,
                 flex: 1,
               }}
-              defaultValue={customNames[item.id] || `Recording #${index + 1}`}
-              onSubmitEditing={(e) => saveName(item.id, e.nativeEvent.text)}
+              defaultValue={`Recording #${index + 1}`}
+              onSubmitEditing={(e) => {
+                setCustomNames((prev) => ({
+                  ...prev,
+                  [item.id]: e.nativeEvent.text,
+                }));
+                setEditingId(null);
+              }}
               onBlur={() => setEditingId(null)}
               autoFocus
               returnKeyType="done"
@@ -218,65 +277,65 @@ export default function RecordingsScreen() {
               placeholderTextColor="#9CA3AF"
             />
           ) : (
-            <Text className="text-white font-bold text-lg flex-1">
+            <Text style={{ color: "white", fontWeight: "bold", fontSize: 18, flex: 1 }}>
               {customNames[item.id] || `Recording #${index + 1}`}
             </Text>
           )}
-
-          {/* Total duration always on right side */}
-          <Text className="text-white text-lg ml-3">
+          <Text style={{ color: "#D1D5DB", fontSize: 18, marginLeft: 12 }}>
             {formatTime(item.duration)}
           </Text>
         </TouchableOpacity>
 
-        {/* Expanded controls */}
-        {isExpanded && !isEditing && (
+        {isExpanded && (
           <View
-            className="rounded-b-xl px-3 pb-3 mb-3"
-            style={{ backgroundColor: 'rgba(100,120,120,0.3)' }}
+            style={{
+              backgroundColor: "black",
+              borderBottomLeftRadius: 12,
+              borderBottomRightRadius: 12,
+              paddingHorizontal: 12,
+              paddingBottom: 12,
+              marginBottom: 8,
+            }}
           >
             <Slider
-              style={{ width: '100%', height: 40 }}
+              style={{ width: "100%", height: 40 }}
               minimumValue={0}
               maximumValue={duration}
               value={position}
-              onSlidingComplete={handleSeek}
-              minimumTrackTintColor="#38BDF8"
-              maximumTrackTintColor="white"
+              onSlidingComplete={async (v) => {
+                if (sound) {
+                  await sound.setPositionAsync(v);
+                  setPosition(v);
+                }
+              }}
+              minimumTrackTintColor="#60A5FA"
+              maximumTrackTintColor="#9CA3AF"
               thumbTintColor="white"
             />
-
-            {/* Current playback time and total duration row */}
-            <View className="flex-row justify-between px-1 mt-1">
-              <Text className="text-sky-400 text-sm">{formatTime(position)}</Text>
-              <Text className="text-white text-sm">{formatTime(duration)}</Text>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 4 }}>
+              <Text style={{ color: "#93C5FD", fontSize: 12 }}>{formatTime(position)}</Text>
+              <Text style={{ color: "#E5E7EB", fontSize: 12 }}>{formatTime(duration)}</Text>
             </View>
-
-            <View className="flex-row justify-between items-center mt-2">
+            <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 8 }}>
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('HomeScreen', {
-                    screen: 'SetAlarm',
+                  navigation.navigate("HomeTab", {
+                    screen: "SetAlarmScreen",
                     params: { audioUri: item.audioUri, recordingId: item.id },
                   })
                 }
-                className="p-2"
+                style={{ padding: 8 }}
               >
                 <MaterialIcons name="alarm" size={28} color="#FBBF24" />
               </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => handlePlayPause(item.audioUri)} className="p-2">
+              <TouchableOpacity onPress={() => handlePlayPause(item.audioUri)} style={{ padding: 8 }}>
                 <FontAwesome
-                  name={isPlaying ? 'pause' : 'play'}
+                  name={isPlaying && isPlayingAudio ? "pause" : "play"}
                   size={28}
                   color="white"
                 />
               </TouchableOpacity>
-
-              <TouchableOpacity
-                onPress={() => handleDelete(item.id, item.audioUri)}
-                className="p-2"
-              >
+              <TouchableOpacity onPress={() => handleDelete(item.id, item.audioUri)} style={{ padding: 8 }}>
                 <MaterialIcons name="delete" size={28} color="#F87171" />
               </TouchableOpacity>
             </View>
@@ -286,7 +345,6 @@ export default function RecordingsScreen() {
     );
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (sound) {
@@ -297,22 +355,32 @@ export default function RecordingsScreen() {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 p-4 bg-black">
-      <View className='mb-5'>
-      <Text className="text-white text-2xl font-bold mb-4 text-center ">Recordings</Text>
+    <SafeAreaView style={{ flex: 1, padding: 16, backgroundColor: "black" }}>
+      <View style={{ marginBottom: 32, flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+        <Text style={{ color: "white", fontSize: 34, fontWeight: "bold", marginTop: 33 }}>
+          All Recordings
+        </Text>
+        <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+          <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut} style={{ marginTop: 33, padding: 8 }}>
+            <Entypo name="dots-three-vertical" size={22} color="white" />
+          </Pressable>
+        </Animated.View>
       </View>
+
       <FlatList
-        data={[...recordings]}  // Oldest first, no reverse
+        data={recordings}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={
-          <View className="items-center justify-center mt-20">
-            <Text className="text-gray-400">No recordings yet</Text>
+          <View style={{ alignItems: "center", marginTop: 80 }}>
+            <Text style={{ color: "#9CA3AF" }}>No recordings yet</Text>
           </View>
         }
         keyboardShouldPersistTaps="handled"
+        ItemSeparatorComponent={() => (
+          <View style={{ height: 1, backgroundColor: "#333", marginVertical: 6 }} />
+        )}
       />
-
     </SafeAreaView>
   );
 }

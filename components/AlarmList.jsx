@@ -1,121 +1,232 @@
-import React, { useState } from 'react';
-import { View, Text, Switch, Alert, Pressable } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Switch, Alert, Pressable } from 'react-native';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import { Entypo } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useAlarm } from '../components/AlarmContext';
+import { Ionicons } from '@expo/vector-icons';
+import { useAlarm } from './AlarmContext';
 import { Audio } from 'expo-av';
 
-const AlarmList = () => {
-  const { alarms, deleteAlarm } = useAlarm();
-  const [sound, setSound] = useState(null);
-  const [playingId, setPlayingId] = useState(null);
+function formatDisplayTime(item) {
+  const hasHMA = item?.hour !== undefined && item?.minute !== undefined && item?.ampm;
+  if (hasHMA) {
+    const hh = String(item.hour).padStart(2, '0');
+    const mm = String(item.minute).padStart(2, '0');
+    return `${hh}:${mm} ${item.ampm}`;
+  }
+  return '—';
+}
 
-  const handleDelete = (rowMap, alarmId) => {
-    Alert.alert('Delete Alarm', 'Are you sure you want to delete this alarm?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: () => {
-          if (rowMap[alarmId]) rowMap[alarmId].closeRow();
-          deleteAlarm(alarmId);
-        },
-      },
-    ]);
-  };
+export default function AlarmList() {
+  const { alarms = [], deleteAlarm, updateAlarm } = useAlarm();
+  const soundRef = useRef(null);
+  const [isLongPressing, setIsLongPressing] = useState(false);
 
-  const startPlaying = async (alarm) => {
+  const startAudio = async (uri) => {
+    if (!uri) {
+      Alert.alert('No audio', 'This alarm has no attached audio.');
+      return;
+    }
+
     try {
-      if (sound) {
-        await sound.stopAsync();
-        await sound.unloadAsync();
-        setSound(null);
+      // Clean up existing sound
+      if (soundRef.current) {
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
       }
-      const { sound: newSound } = await Audio.Sound.createAsync({
-        uri: alarm.audioUri,
+
+      // Force loudspeaker playback
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: false,
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: true,
+        playThroughEarpieceAndroid: false, // Loudspeaker on Android
       });
-      setSound(newSound);
-      setPlayingId(alarm.id);
-      await newSound.playAsync();
+
+      const { sound } = await Audio.Sound.createAsync(
+        { uri },
+        {
+          shouldPlay: true,
+          volume: 1.0,
+        }
+      );
+
+      soundRef.current = sound;
+      sound.setOnPlaybackStatusUpdate((status) => {
+        if (status.didJustFinish) {
+          console.log("finished playing")
+          resetAudioModeForRecording();
+        }
+      });
+
     } catch (error) {
-      console.log('Error playing sound:', error);
+      console.error('Audio error:', error);
+      Alert.alert('Error', `Unable to play alarm audio: ${error.message}`);
+      setIsLongPressing(false);
     }
   };
 
-  const stopPlaying = async () => {
-    if (sound) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-      setSound(null);
-      setPlayingId(null);
+  const resetAudioModeForRecording = async () => {
+    try {
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+        staysActiveInBackground: true,
+      });
+    } catch (error) {
+      console.error('Error resetting audio mode:', error);
     }
+  };
+
+  const stopAudio = async () => {
+    if (soundRef.current) {
+      await soundRef.current.stopAsync();
+      await soundRef.current.unloadAsync();
+      soundRef.current = null;
+      await resetAudioModeForRecording()
+    }
+    setIsLongPressing(false);
+  };
+
+  const renderItem = ({ item }) => {
+    const displayTime = formatDisplayTime(item);
+    const daysText = Array.isArray(item?.days) ? item.days.join(', ') : '';
+
+    return (
+      <Pressable
+        style={({ pressed }) => [
+          styles.rowFront,
+          pressed && { opacity: 0.7 }
+        ]}
+        delayLongPress={200}
+        onPressIn={() => setIsLongPressing(true)}
+        onLongPress={() => startAudio(item.audioUri)}
+        onPressOut={stopAudio}
+      >
+        <View style={styles.rowContent}>
+          <View>
+            <Text style={styles.timeText}>{displayTime}</Text>
+            {daysText ? <Text style={styles.daysText}>{daysText}</Text> : null}
+          </View>
+          <Switch
+            value={!!item.enabled}
+            onValueChange={(val) => {
+              updateAlarm(item.id, { enabled: val });
+
+              if (val) {
+                const time = formatDisplayTime(item);
+                const days = Array.isArray(item?.days) && item.days.length
+                  ? item.days.join(', ')
+                  : 'No days selected';
+                Alert.alert('Alarm ON', `You turned the alarm for ${time} on ${days}`);
+              }
+            }}
+          />
+        </View>
+      </Pressable>
+    );
+  };
+
+  const renderHiddenItem = (rowData, rowMap) => {
+    const id = rowData?.item?.id;
+
+    return (
+      <View style={styles.rowBack}>
+        {!isLongPressing && (
+          <TouchableOpacity
+            style={[styles.backRightBtn, styles.deleteBtn]}
+            onPress={() => {
+              if (id && rowMap[id]) rowMap[id].closeRow();
+              if (id) deleteAlarm(id);
+            }}
+          >
+            <Ionicons name="trash" size={32} color="white" />
+          </TouchableOpacity>
+        )}
+      </View>
+    );
   };
 
   return (
-    <View className="flex-1 bg-black px-4 pt-5">
-      <Text className="text-white text-2xl font-bold mb-6">Alarm List</Text>
+    <View style={{ flex: 1, backgroundColor: 'black' }}>
+      <Text style={styles.title}>Alarm List</Text>
 
-      {alarms.length === 0 ? (
-        <Text className="text-gray-400 text-lg text-center mt-4">
-          No alarms set
-        </Text>
-      ) : (
+      {alarms.length > 0 ? (
         <SwipeListView
           data={alarms}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Pressable
-              onPressIn={() => startPlaying(item)}
-              onPressOut={stopPlaying}
-              android_ripple={{ color: '#333', borderless: false }}
-              style={{
-                backgroundColor: playingId === item.id ? '#111' : 'black',
-                padding: 16,
-                borderRadius: 12,
-                marginBottom: 12,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}
-            >
-              <View>
-                <Text className="text-white text-xl font-bold">
-                  {`${item.hour.toString().padStart(2, '0')}:${item.minute
-                    .toString()
-                    .padStart(2, '0')} ${item.ampm}`}
-                </Text>
-                <Text className="text-gray-400 text-sm mt-1">
-                  {item.days.join(', ')}
-                </Text>
-              </View>
-              <Switch
-                value={true}
-                onValueChange={() => {}}
-                trackColor={{ false: '#555', true: '#22c55e' }}
-                thumbColor="#fff"
-              />
-            </Pressable>
-          )}
-          renderHiddenItem={({ item }, rowMap) => (
-            <View className="flex-1 flex-row justify-end pr-4 items-center">
-              <TouchableOpacity
-                onPress={() => handleDelete(rowMap, item.id)}
-                className="bg-red-600 w-14 h-14 rounded-full justify-center items-center"
-              >
-                <Entypo name="trash" size={22} color="white" />
-              </TouchableOpacity>
-            </View>
-          )}
-          rightOpenValue={-80}
-          disableLeftSwipe={false}
-          disableRightSwipe={true}
-          showsVerticalScrollIndicator={false}
+          keyExtractor={(item, index) => (item?.id ? String(item.id) : String(index))}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-75}
+          disableRightSwipe
           contentContainerStyle={{ paddingBottom: 40 }}
         />
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>No alarms set</Text>
+        </View>
       )}
     </View>
   );
-};
+}
 
-export default AlarmList;
+const styles = StyleSheet.create({
+  title: {
+    color: 'white',
+    fontSize: 30,
+    fontWeight: '800',
+    paddingHorizontal: 19,
+    paddingVertical: 12,
+    textAlign: 'left',
+    marginBottom: 6,
+    marginTop: 13,
+  },
+  rowFront: {
+    backgroundColor: 'black',
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    padding: 18,
+  },
+  rowContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  timeText: {
+    fontSize: 24,
+    fontWeight: '400',
+    color: 'white',
+  },
+  daysText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  rowBack: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'black',
+    height: '100%',
+  },
+  backRightBtn: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
+  },
+  deleteBtn: {
+    backgroundColor: 'red',
+    right: 0,
+    width: 90,
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyContainer: {
+    padding: 21,
+    alignItems: 'center',
+  },
+  emptyText: {
+    color: '#888',
+    fontSize: 16,
+  },
+});
