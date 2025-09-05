@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:padding="32dp">
+
+    <!-- Alarm Icon -->
+    <ImageView
+        android:id="@+id/alarm_icon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:src="@drawable/ic_notification"
+        android:tint="#FFFFFF" />
+
+    <!-- Current Time Display -->
+    <TextView
+        android:id="@+id/time_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/alarm_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="00:00"
+        android:textColor="#FFFFFF"
+        android:textSize="48sp"
+        android:textStyle="bold" />
+
+    <!-- Alarm Label -->
+    <TextView
+        android:id="@+id/alarm_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/time_display"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Alarm Ringing"
+        android:textColor="#CCCCCC"
+        android:textSize="18sp" />
+
+    <!-- Button Container -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- Snooze Button -->
+        <Button
+            android:id="@+id/snooze_button"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_snooze"
+            android:text="Snooze"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Stop Button -->
+        <Button
+            android:id="@+id/stop_button"
+            android:layout_width="140dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/button_stop"
+            android:text="Stop"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>
