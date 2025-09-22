@@ -1,0 +1,226 @@
+{
+    "common": {
+      "ok": "OK",
+      "cancel": "Avbryt",
+      "error": "Fel",
+      "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "save": "Spara",
+      "done": "Klar",
+      "success": "Lyckades"
+    },
+    "days": {
+      "mon": "MÅN",
+      "tue": "TIS",
+      "wed": "ONS",
+      "thu": "TOR",
+      "fri": "FRE",
+      "sat": "LÖR",
+      "sun": "SÖN"
+    },
+    "time": {
+      "hr": "Tim",
+      "min": "Min",
+      "am": "FM",
+      "pm": "EM"
+    },
+    "settings": "Inställningar",
+    "about": {
+      "title": "Om Bilalarm",
+      "version": "Version",
+      "description": "LFG är den första appen som låter dig vakna till ljudet av din egen bil. Spela in dina billjud och ställ in dem som ditt anpassade alarm. Med avancerade funktioner som vibration, gradvis volymökning, konfigurerbar snooze och visuella varningar är varje uppvaknande skräddarsytt efter dina preferenser. Njut av en unik, innovativ och fullt anpassningsbar alarmupplevelse.",
+      "itemTitle": "Appinformation",
+      "status": "Redo för produktion"
+    },
+    "device": {
+      "title": "Enhetsinformation",
+      "brand": "Märke",
+      "model": "Modell",
+      "os": "Android-version",
+      "api": "API-nivå",
+      "memory": "Minne",
+      "error": "Kunde inte hämta enhetsinformation",
+      "itemTitle": "Enhetsinformation"
+    },
+    "support": {
+      "itemTitle": "Rapportera ett problem",
+      "itemDesc": "Skicka feedback eller rapportera ett fel",
+      "subject": "Bilalarm - Felrapport",
+      "issueDescription": "Problembeskrivning",
+      "steps": "Steg för att reproducera",
+      "expected": "Förväntat beteende",
+      "actual": "Faktiskt beteende",
+      "emailUnavailableTitle": "E-postapp ej tillgänglig",
+      "emailUnavailableBody": "Vänligen skicka ditt problem manuellt till:"
+    },
+    "rate": {
+      "itemTitle": "Betygsätt appen",
+      "itemDesc": "Betygsätt oss på Google Play Store",
+      "title": "Betygsätt appen",
+      "fallback": "Vänligen betygsätt vår app på Google Play Store!"
+    },
+    "share": {
+      "itemTitle": "Dela appen",
+      "itemDesc": "Berätta för dina vänner om denna app",
+      "title": "Dela appen",
+      "message": "Berätta för dina vänner om denna alarmapp!",
+      "copy": "Kopiera länk",
+      "copiedTitle": "Länk kopierad",
+      "copiedBody": "Nedladdningslänk kopierad till urklipp!"
+    },
+    "privacy": {
+      "itemTitle": "Integritetspolicy",
+      "itemDesc": "Hur vi hanterar dina data",
+      "title": "Integritetspolicy",
+      "body": "LFG\n\nPå Bilalarm är din integritet viktig för oss. ..."
+    },
+    "connect": {
+      "itemTitle": "Användarvillkor",
+      "itemDesc": "Villkor för användning av appen",
+      "title": "Användarvillkor",
+      "body": "Välkommen till Bilalarm. Genom att ladda ner och installera...",
+      "fallback": "Webbplatsen kunde inte öppnas. Besök https://lfgburnego.com manuellt."
+    },
+    "alarm": {
+      "sound": "Alarmljud",
+      "soundDesc": "Spela ljud när alarm utlöses",
+      "vibration": "Vibration",
+      "vibrationDesc": "Vibrera enheten under alarm",
+      "fadeIn": "Mjukt uppvaknande",
+      "fadeInDesc": "Öka volymen gradvis över 2 sekunder",
+      "volumeBoost": "Volymförstärkning",
+      "volumeBoostDesc": "Extra volym för djupsovare",
+      "snooze": "Snooze-funktion",
+      "snoozeDesc": "Tillåt snooze i {{duration}} minuter",
+      "setHeader": "STÄLL IN ALARM",
+      "savedTitle": "Alarm sparat framgångsrikt!",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "Kunde inte spara alarm. Försök igen.",
+      "defaultSoundName": "Standardalarmljud"
+    },
+    "battery": {
+      "title": "Batterioptimering",
+      "itemTitle": "Batterioptimering",
+      "message": "För pålitlig alarmfunktion, vänligen inaktivera batterioptimering för denna app.\n\nDetta säkerställer att alarm fungerar även när enheten är i djupt viloläge.",
+      "openSettings": "Öppna inställningar",
+      "alreadyDone": "Redan gjort",
+      "manualInstructions": "Vänligen gå manuellt till Inställningar > Appar > Bilalarm > Batteri > Ta bort från batterioptimering",
+      "disabled": "Batterioptimering inaktiverad - alarm kommer att fungera pålitligt",
+      "needsDisable": "Vänligen inaktivera batterioptimering för pålitliga alarm",
+      "ensureReliability": "Säkerställ att alarm fungerar även i djupt viloläge"
+    },
+    "notifications": {
+      "itemTitle": "Notiser",
+      "enabled": "Alarmnotiser aktiverade",
+      "disabled": "Alarmnotiser inaktiverade",
+      "permissionDeniedTitle": "Tillstånd nekad",
+      "permissionDeniedMessage": "Vänligen aktivera notiser i enhetsinställningarna"
+    },
+    "settingsCommon": {
+      "title": "Inställningar",
+      "subtitle": "Anpassa din väckarupplevelse",
+      "language": "Språk",
+      "notifications": "Notiser",
+      "batteryOptimization": "Batterioptimering",
+      "deleteRecordings": "Radera alla inspelningar",
+      "about": "Om",
+      "privacy": "Integritetspolicy",
+      "connect": "Användarvillkor",
+      "support": "Support",
+      "rate": "Betygsätt appen",
+      "share": "Dela appen",
+      "deviceInfo": "Enhetsinformation",
+      "ok": "OK",
+      "cancel": "Avbryt",
+      "error": "Fel"
+    },
+    "storageManagement": {
+      "title": "Lagring",
+      "description": "{{recordings}} inspelningar, {{size}} MB, Status: {{status}}",
+      "alertTitle": "Lagringsinformation",
+      "alertMessage": "{{recordings}} inspelningar, {{size}} MB använt, {{cache}} cache-filer",
+      "status": {
+        "normal": "Normal",
+        "moderate": "Måttlig",
+        "high": "Hög"
+      }
+    },
+    "recordings": {
+      "title": "Inspelningar",
+      "noRecordingsYet": "Inga inspelningar ännu",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "Börja med att spela in ljud i fliken Hem eller importera befintliga ljudfiler",
+      "importAudioFiles": "Importera ljudfiler",
+      "renameRecording": "Byt namn på inspelning",
+      "enterRecordingName": "Ange inspelningsnamn",
+      "deleteRecording": "Radera inspelning",
+      "deleteRecordingConfirmMessage": "Är du säker på att du vill radera denna inspelning? Denna åtgärd kan inte ångras.",
+      "deleteTitle": "Radera inspelning",
+      "deleteMessage": "Är du säker på att du vill radera denna inspelning?",
+      "deleteSuccessTitle": "Inspelning raderad",
+      "deleteSuccessMessage": "Inspelningen har raderats framgångsrikt.",
+      "edit": "Redigera",
+      "play": "Spela",
+      "pause": "Pausa",
+      "setAlarm": "Ställ in alarm",
+      "loading": "Laddar",
+      "uploadError": "Kunde inte ladda upp ljudfil",
+      "playbackError": "Kunde inte spela upp ljudfil",
+      "renameError": "Fel vid omdöpning av inspelning. Försök igen.",
+      "updateError": "Uppdateringsfunktion inte tillgänglig. Försök igen.",
+      "deleteError": "Fel vid radering av inspelning.",
+      "navigationError": "Fel vid navigering till alarminställningar.",
+      "importError": "Kunde inte importera ljudfil",
+      "importSuccess": "Ljudfil importerad framgångsrikt",
+      "fileMissing": "Fil saknas eller är skadad",
+      "playbackErrorTitle": "Uppspelningsfel",
+      "playbackErrorMessage": "Kan inte spela upp inspelning. Filen kan vara skadad.",
+      "errorTitle": "Filfel",
+      "unnamed": "Namnlös inspelning",
+      "defaultName": "Inspelning {{number}}",
+      "lfgAudioDefaultName": "LFG-ljud"
+    },
+    "deleteRecordings": {
+      "title": "Radera alla inspelningar",
+      "confirmMessage": "Är du säker på att du vill radera alla inspelningar?",
+      "confirm": "Radera",
+      "successTitle": "Inspelningar raderade",
+      "successMessage": "Alla inspelningar har raderats"
+    },
+    "languageSelector": {
+      "title": "Språk",
+      "confirmMessage": "Är du säker på att du vill ändra språk?",
+      "confirm": "Ändra",
+      "successTitle": "Språk ändrat",
+      "successMessage": "Språket har ändrats"
+    },
+    "recorder": {
+      "record": "Spela in",
+      "stop": "Stoppa",
+      "stopping": "Stoppar...",
+      "upload": "Ladda upp",
+      "import": "Importera",
+      "or": "eller",
+      "permission_denied": "Mikrofonåtkomst krävs för inspelning.",
+      "no_recording": "Det finns ingen aktiv inspelning.",
+      "recording_failed": "Kunde inte spara inspelningen. Försök igen.",
+      "recording_empty": "Inspelningen är tom. Inget ljud har spelats in. Se till att mikrofonåtkomst är tillåten.",
+      "recording_invalid": "Ogiltig inspelning",
+      "storage_error": "Kunde inte spara inspelningen permanent. Försök igen.",
+      "file_too_large": "Vänligen välj en ljudfil mindre än 10 MB.",
+      "invalid_audio": "Ogiltigt ljud",
+      "upload_failed": "Kunde inte ladda upp ljudfilen. Försök igen.",
+      "import_failed": "Kunde inte importera ljudfilen. Försök igen."
+    },
+    "alarmlist": {
+      "title": "Dina alarm",
+      "no_alarms": "Inga alarm inställda",
+      "create_first_alarm": "Skapa ditt första alarm för att börja",
+      "delete": "Radera",
+      "preview_unavailable": "Förhandsvisning ej tillgänglig",
+      "preview_unavailable_body": "Detta alarm använder systemets standardljud som inte kan förhandsvisas här. Du kan testa det genom att ställa in ett kort alarm.",
+      "playback_error": "Uppspelningsfel",
+      "playback_error_body": "Kunde inte spela upp detta alarmljud. Ljudfilen kan vara skadad eller saknas.",
+      "ok": "OK",
+      "no_days_selected": "Inga dagar valda",
+      "everyday": "VARJE DAG"
+    }
+  }

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.AudioDeviceInfo;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -30,11 +31,12 @@ import java.util.Locale;
  */
 public class AlarmAudioService extends Service {
     private static final String TAG = "AlarmAudioService";
-    private static final String CHANNEL_ID = "alarm_audio_service";
-    private static final int NOTIFICATION_ID = 99999; // Unique ID to avoid conflicts
+    private static final String CHANNEL_ID = "alarm_audio_service_v4"; // Versioned for settings updates
+    private static final int NOTIFICATION_ID = 12345; // Single consistent notification ID
     
     public static final String ACTION_START_ALARM = "START_ALARM";
     public static final String ACTION_STOP_ALARM = "STOP_ALARM";
+    public static final String ACTION_RENOTIFY = "RENOTIFY";
     public static final String EXTRA_AUDIO_PATH = "audio_path";
     public static final String EXTRA_ALARM_ID = "alarm_id";
     
@@ -43,6 +45,7 @@ public class AlarmAudioService extends Service {
     private PowerManager.WakeLock wakeLock;
     private String currentAlarmId;
     private String currentAudioPath;
+    private static volatile boolean sIsAlarmActive = false;
 
     @Override
     public void onCreate() {
@@ -63,40 +66,59 @@ public class AlarmAudioService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "🚨🚨🚨 PERSISTENT FOREGROUND SERVICE - INDEPENDENT OF APP 🚨🚨🚨");
+        Log.d(TAG, "🚨🚨🚨 SINGLE NOTIFICATION ALARM SERVICE 🚨🚨🚨");
         Log.d(TAG, "Intent: " + (intent != null ? intent.getAction() : "null"));
-        Log.d(TAG, "🔥 SERVICE RUNS INDEPENDENTLY - App termination CANNOT stop this!");
         
-        if (intent == null) {
-            Log.w(TAG, "Intent is null - but KEEPING SERVICE ALIVE (app may be terminated)");
-            // CRITICAL FIX: Do NOT stop service on null intent
-            // This happens when app is terminated - we must keep alarm playing!
-            return START_STICKY;
+        try {
+            if (intent == null) {
+                Log.w(TAG, "Intent is null - keeping service alive");
+                return START_STICKY;
+            }
+
+            String action = intent.getAction();
+            Log.d(TAG, "🎯 Processing action: " + action);
+
+            if (ACTION_START_ALARM.equals(action)) {
+                String audioPath = intent.getStringExtra(EXTRA_AUDIO_PATH);
+                String alarmId = intent.getStringExtra(EXTRA_ALARM_ID);
+                Log.d(TAG, "🔊 STARTING SINGLE NOTIFICATION ALARM");
+                startAlarmAudio(audioPath, alarmId);
+            } else if (ACTION_STOP_ALARM.equals(action)) {
+                Log.d(TAG, "🛑 STOP requested - User action");
+                stopAlarmAudio();
+            } else if (ACTION_RENOTIFY.equals(action)) {
+                Log.d(TAG, "🔄 Rebuilding foreground notification after dismiss attempt");
+                try {
+                    Notification fancyNotification = createFancyAlarmNotification();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        startForeground(NOTIFICATION_ID, fancyNotification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                    } else {
+                        startForeground(NOTIFICATION_ID, fancyNotification);
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to re-notify", e);
+                }
+            } else {
+                Log.d(TAG, "⚠️ Unknown action: " + action);
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error in onStartCommand", e);
+            // Continue anyway - service should stay alive
         }
 
-        String action = intent.getAction();
-        Log.d(TAG, "🎯 Processing action: " + action);
-
-        if (ACTION_START_ALARM.equals(action)) {
-            String audioPath = intent.getStringExtra(EXTRA_AUDIO_PATH);
-            String alarmId = intent.getStringExtra(EXTRA_ALARM_ID);
-            Log.d(TAG, "🔊 STARTING MAXIMUM PERSISTENCE ALARM");
-            startAlarmAudio(audioPath, alarmId);
-        } else if (ACTION_STOP_ALARM.equals(action)) {
-            Log.d(TAG, "🛑 EXPLICIT STOP requested - User action");
-            stopAlarmAudio();
-        } else {
-            Log.d(TAG, "⚠️ Unknown action - keeping service alive: " + action);
-        }
-
-        // MAXIMUM PERSISTENCE: Always return START_STICKY
-        Log.d(TAG, "✅ Service configured for MAXIMUM PERSISTENCE");
+        // Always return START_STICKY for reliability
         return START_STICKY;
     }
 
     private void startAlarmAudio(String audioPath, String alarmId) {
         try {
             Log.d(TAG, "🔊🔊🔊 FOREGROUND SERVICE: Starting PERSISTENT alarm audio 🔊🔊🔊");
+            Log.d(TAG, "🎯 Alarm ID: " + alarmId);
+            Log.d(TAG, "🎵 Audio Path: " + audioPath);
+            
+            // PROFESSIONAL FIX: Cancel any system alarm notifications first
+            cancelSystemAlarmNotifications();
             
             // CRITICAL: Stop any existing alarm first to prevent duplicates
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
@@ -106,26 +128,38 @@ public class AlarmAudioService extends Service {
             
             currentAlarmId = alarmId;
             currentAudioPath = audioPath;
+            sIsAlarmActive = true;
             
-            // Create minimal hidden notification for foreground service compliance
-            createMinimalNotificationChannel();
-            Notification hiddenNotification = createHiddenNotification();
+            Log.d(TAG, "✅ Current alarm state set - ID: " + currentAlarmId + ", Audio: " + currentAudioPath);
             
-            // Start foreground service with hidden notification
+            // Create FANCY alarm notification with controls
+            createFancyNotificationChannel();
+            Notification fancyNotification = createFancyAlarmNotification();
+            
+            // Start foreground service with fancy notification
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(NOTIFICATION_ID, hiddenNotification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                startForeground(NOTIFICATION_ID, fancyNotification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
             } else {
-                startForeground(NOTIFICATION_ID, hiddenNotification);
+                startForeground(NOTIFICATION_ID, fancyNotification);
             }
             
-            Log.d(TAG, "🔇 HIDDEN SERVICE: Minimal notification for compliance - Android system notification is the visible one");
+            Log.d(TAG, "🎨 FANCY NOTIFICATION: Professional alarm notification with Stop/Snooze controls");
             
-            // FORCE MAXIMUM VOLUME
+            // FORCE MAXIMUM VOLUME and route to built-in speaker (not Bluetooth)
             AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
             if (audioManager != null) {
                 int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
                 audioManager.setStreamVolume(AudioManager.STREAM_ALARM, maxVolume, AudioManager.FLAG_SHOW_UI);
-                audioManager.setSpeakerphoneOn(true);
+                try {
+                    audioManager.stopBluetoothSco();
+                } catch (Exception ignored) {}
+                try {
+                    audioManager.setBluetoothScoOn(false);
+                } catch (Exception ignored) {}
+                try {
+                    audioManager.setSpeakerphoneOn(true);
+                    audioManager.setMode(AudioManager.MODE_NORMAL);
+                } catch (Exception ignored) {}
                 Log.d(TAG, "🔊 MAXIMUM volume set: " + maxVolume);
             }
 
@@ -142,30 +176,47 @@ public class AlarmAudioService extends Service {
                 .build();
             
             mediaPlayer.setAudioAttributes(audioAttributes);
-            
-            // Set audio source with fallback
-            boolean customAudioSet = false;
-            if (audioPath != null && !audioPath.isEmpty()) {
-                try {
-                    String actualPath = convertToActualPath(audioPath);
-                    File audioFile = new File(actualPath);
-                    
-                    Log.d(TAG, "🎵 Checking custom audio: " + actualPath);
-                    Log.d(TAG, "📁 File exists: " + audioFile.exists());
-                    
-                    if (audioFile.exists() && audioFile.length() > 0) {
-                        Log.d(TAG, "✅ Using custom audio: " + actualPath);
-                        mediaPlayer.setDataSource(actualPath);
-                        customAudioSet = true;
+
+            // Prefer built-in speaker output when possible (API 23+)
+            try {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    if (am != null) {
+                        AudioDeviceInfo[] devices = am.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+                        AudioDeviceInfo speaker = null;
+                        for (AudioDeviceInfo d : devices) {
+                            if (d.getType() == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER) {
+                                speaker = d;
+                                break;
+                            }
+                        }
+                        if (speaker != null) {
+                            boolean ok = mediaPlayer.setPreferredDevice(speaker);
+                            Log.d(TAG, "📢 Preferred device set to built-in speaker: " + ok);
+                        }
                     }
-                } catch (Exception e) {
-                    Log.e(TAG, "Custom audio failed", e);
                 }
+            } catch (Throwable t) {
+                Log.w(TAG, "Could not set preferred device", t);
             }
             
-            if (!customAudioSet) {
-                Log.d(TAG, "🔔 Using default alarm sound");
-                setDefaultAlarmSound();
+            // STREAMLINED FIX: Handle audio with proper URI resolution
+            try {
+                if (audioPath != null && !audioPath.isEmpty() && !"default_alarm_sound".equals(audioPath)) {
+                    Log.d(TAG, "🎵 Loading custom audio: " + audioPath);
+                    loadCustomAudio(audioPath);
+                } else {
+                    Log.d(TAG, "🎵 Loading LFG default audio from assets");
+                    loadFallbackAudio();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "❌ Failed to load custom audio, using fallback", e);
+                try {
+                    loadFallbackAudio();
+                } catch (Exception fallbackError) {
+                    Log.e(TAG, "❌ Fallback audio also failed", fallbackError);
+                    return; // Exit without setting any audio source
+                }
             }
             
             // Configure UNLIMITED looping and maximum volume
@@ -180,13 +231,18 @@ public class AlarmAudioService extends Service {
             });
             
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                Log.e(TAG, "MediaPlayer error: " + what + ", " + extra + " - RECOVERING AUTOMATICALLY");
+                Log.e(TAG, "MediaPlayer error: " + what + ", " + extra + " - NO SYSTEM DEFAULT RECOVERY");
                 try {
-                    Log.d(TAG, "🔄 Auto-recovery: Switching to default alarm sound");
+                    Log.d(TAG, "🔄 Auto-recovery: Trying LFG default audio (NO SYSTEM DEFAULT)");
                     mp.reset();
-                    setDefaultAlarmSound();
-                    mp.prepareAsync();
-                    Log.d(TAG, "✅ Recovery successful - alarm continues playing");
+                    boolean lfgLoaded = loadLFGAudioFromAssets();
+                    if (lfgLoaded) {
+                        mp.prepareAsync();
+                        Log.d(TAG, "✅ Recovery successful with LFG audio - no system default");
+                    } else {
+                        Log.w(TAG, "⚠️ LFG recovery failed - alarm will be silent to prevent system default");
+                        // Do not call setDefaultAlarmSound() - this prevents system audio overlap
+                    }
                 } catch (Exception e) {
                     Log.e(TAG, "Failed to recover from error", e);
                 }
@@ -242,6 +298,7 @@ public class AlarmAudioService extends Service {
         
         stopForeground(true);
         stopSelf();
+        sIsAlarmActive = false;
     }
 
     private void startVibration() {
@@ -259,6 +316,147 @@ public class AlarmAudioService extends Service {
             }
         } catch (Exception e) {
             Log.e(TAG, "Failed to start vibration", e);
+        }
+    }
+
+    /**
+     * STREAMLINED FIX: Load fallback audio from assets
+     */
+    private void loadFallbackAudio() throws Exception {
+        Log.d(TAG, "🎵 Loading LFG fallback audio from assets");
+        android.content.res.AssetFileDescriptor afd = getAssets().openFd("audio/lfg_default.mp3");
+        if (afd != null) {
+            mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+            Log.d(TAG, "✅ Loaded fallback audio from assets");
+        } else {
+            throw new Exception("Could not open LFG audio asset");
+        }
+    }
+
+    private boolean loadLFGAudioFromAssets() {
+        try {
+            Log.d(TAG, "🎵 Loading LFG audio from assets...");
+            android.content.res.AssetFileDescriptor afd = getAssets().openFd("audio/lfg_default.mp3");
+            if (afd != null) {
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                afd.close();
+                Log.d(TAG, "✅ LFG default audio loaded from assets");
+                return true;
+            }
+        } catch (Exception assetError) {
+            Log.w(TAG, "⚠️ LFG audio from assets failed", assetError);
+        }
+        return false;
+    }
+    
+    /**
+     * STREAMLINED FIX: Load custom audio with proper URI handling
+     */
+    private void loadCustomAudio(String audioPath) throws Exception {
+        Log.d(TAG, "🎵 Loading custom audio: " + audioPath);
+        
+        if (audioPath.startsWith("content://")) {
+            // Handle content URIs (from MediaStore, SAF, React Native)
+            Log.d(TAG, "📱 Handling content:// URI");
+            android.net.Uri uri = android.net.Uri.parse(audioPath);
+            android.content.ContentResolver resolver = getContentResolver();
+            android.content.res.AssetFileDescriptor afd = resolver.openAssetFileDescriptor(uri, "r");
+            
+            if (afd != null) {
+                mediaPlayer.setDataSource(
+                    afd.getFileDescriptor(),
+                    afd.getStartOffset(),
+                    afd.getLength()
+                );
+                afd.close();
+                Log.d(TAG, "✅ Loaded custom audio from content URI: " + audioPath);
+            } else {
+                throw new Exception("Content URI could not be opened: " + audioPath);
+            }
+        } else if (audioPath.startsWith("file://")) {
+            // Handle file URIs
+            Log.d(TAG, "📁 Handling file:// URI");
+            String actualPath = audioPath.replace("file://", "");
+            mediaPlayer.setDataSource(actualPath);
+            Log.d(TAG, "✅ Loaded custom audio from file URI: " + actualPath);
+        } else {
+            // Handle raw file paths
+            Log.d(TAG, "📂 Handling raw file path");
+            mediaPlayer.setDataSource(audioPath);
+            Log.d(TAG, "✅ Loaded custom audio from raw path: " + audioPath);
+        }
+    }
+
+    
+    private boolean tryComprehensiveAudioPaths(String audioPath) {
+        try {
+            Log.d(TAG, "🔄 Trying comprehensive audio paths for independent playback...");
+            
+            // Extract filename from path
+            String filename = "";
+            if (audioPath.contains("/")) {
+                filename = audioPath.substring(audioPath.lastIndexOf("/") + 1);
+            } else {
+                filename = audioPath;
+            }
+            
+            // Comprehensive list of possible paths for recorded audio
+            String[] alternativePaths = {
+                // Original path variations
+                audioPath,
+                audioPath.replace("file://", ""),
+                audioPath.replace("content://", ""),
+                
+                // App-specific directories
+                "/data/data/com.shakshamkarki.practice/cache/" + filename,
+                "/data/data/com.shakshamkarki.practice/files/" + filename,
+                "/data/data/com.shakshamkarki.practice/cache/recordings/" + filename,
+                "/data/data/com.shakshamkarki.practice/files/recordings/" + filename,
+                
+                // External storage directories
+                "/storage/emulated/0/Android/data/com.shakshamkarki.practice/files/" + filename,
+                "/storage/emulated/0/Android/data/com.shakshamkarki.practice/cache/" + filename,
+                "/storage/emulated/0/Android/data/com.shakshamkarki.practice/files/recordings/" + filename,
+                "/storage/emulated/0/Android/data/com.shakshamkarki.practice/cache/recordings/" + filename,
+                
+                // Common recording directories
+                "/storage/emulated/0/Recordings/" + filename,
+                "/storage/emulated/0/Music/" + filename,
+                "/storage/emulated/0/Download/" + filename,
+                
+                // Legacy paths
+                "/sdcard/Android/data/com.shakshamkarki.practice/files/" + filename,
+                "/sdcard/Android/data/com.shakshamkarki.practice/cache/" + filename,
+            };
+            
+            Log.d(TAG, "🔍 Searching for audio file: " + filename);
+            
+            for (String altPath : alternativePaths) {
+                if (altPath != null && !altPath.isEmpty()) {
+                    Log.d(TAG, "🔍 Checking path: " + altPath);
+                    File altFile = new File(altPath);
+                    if (altFile.exists() && altFile.length() > 0 && altFile.canRead()) {
+                        Log.d(TAG, "✅ Found audio at independent path: " + altPath);
+                        Log.d(TAG, "📏 File size: " + altFile.length() + " bytes");
+                        try {
+                            mediaPlayer.setDataSource(altPath);
+                            Log.d(TAG, "✅ Successfully set audio source from: " + altPath);
+                            return true;
+                        } catch (Exception setSourceError) {
+                            Log.w(TAG, "⚠️ Failed to set source from " + altPath + ", trying next path", setSourceError);
+                            // Continue to next path
+                        }
+                    }
+                }
+            }
+            
+            Log.w(TAG, "❌ No independent audio paths found for: " + filename);
+            return false;
+            
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error trying comprehensive paths", e);
+            return false;
         }
     }
 
@@ -283,153 +481,252 @@ public class AlarmAudioService extends Service {
             return reactNativeUri;
         }
         
+        Log.d(TAG, "🔍 Converting audio path for independent access: " + reactNativeUri);
+        
+        // Handle file:// URIs
         if (reactNativeUri.startsWith("file://")) {
-            return reactNativeUri.substring(7);
+            String path = reactNativeUri.substring(7);
+            Log.d(TAG, "📁 Converted file URI: " + path);
+            return path;
         }
         
+        // Handle content:// URIs (from document picker)
+        if (reactNativeUri.startsWith("content://")) {
+            Log.w(TAG, "⚠️ Content URI detected, will try comprehensive path search: " + reactNativeUri);
+            return reactNativeUri; // Return as-is, comprehensive search will handle it
+        }
+        
+        // Handle app cache/data directory paths
+        if (reactNativeUri.contains("/cache/") || reactNativeUri.contains("/data/")) {
+            Log.d(TAG, "📱 App directory path: " + reactNativeUri);
+            return reactNativeUri; // Already a proper file path
+        }
+        
+        // Handle external storage paths
+        if (reactNativeUri.startsWith("/storage/") || reactNativeUri.startsWith("/sdcard/")) {
+            Log.d(TAG, "💾 External storage path: " + reactNativeUri);
+            return reactNativeUri;
+        }
+        
+        // Handle relative paths - convert to absolute
+        if (!reactNativeUri.startsWith("/")) {
+            // Try to make it absolute by adding common prefixes
+            String[] prefixes = {
+                "/data/data/com.shakshamkarki.practice/cache/",
+                "/data/data/com.shakshamkarki.practice/files/",
+                "/storage/emulated/0/Android/data/com.shakshamkarki.practice/files/",
+                "/storage/emulated/0/Android/data/com.shakshamkarki.practice/cache/"
+            };
+            
+            for (String prefix : prefixes) {
+                String fullPath = prefix + reactNativeUri;
+                Log.d(TAG, "🔍 Trying absolute path: " + fullPath);
+                File testFile = new File(fullPath);
+                if (testFile.exists()) {
+                    Log.d(TAG, "✅ Found absolute path: " + fullPath);
+                    return fullPath;
+                }
+            }
+        }
+        
+        Log.d(TAG, "🔍 Final converted path: " + reactNativeUri);
         return reactNativeUri;
     }
 
-    private void createMinimalNotificationChannel() {
+    private void createFancyNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create notification channel with sound completely disabled
+            // This prevents system default sound from playing alongside custom audio
             NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID,
-                "Background Service",
-                NotificationManager.IMPORTANCE_MIN // Minimal importance - almost invisible
+                "LFG Alarm",
+                NotificationManager.IMPORTANCE_MAX // MAXIMUM importance to show when app terminated
             );
-            channel.setDescription("Background audio service");
-            channel.setSound(null, null); // No sound
-            channel.setShowBadge(false); // No badge
-            channel.setLightColor(0); // No light
-            channel.setVibrationPattern(null); // No vibration
-            channel.enableLights(false); // No lights
-            channel.enableVibration(false); // No vibration
-            channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_SECRET); // Hidden on lock screen
+            channel.setDescription("LFG Alarm notifications with controls");
+            
+            // PROFESSIONAL FIX: Completely disable channel sound to prevent system default tone overlapping with custom audio
+            channel.setSound(null, null);
+            
+            // Notification visibility and behavior
+            channel.setShowBadge(false); // Disable badge
+            channel.setLightColor(android.graphics.Color.RED); // Red notification light
+            channel.setVibrationPattern(new long[]{0, 250, 250, 250}); // Vibration pattern
+            channel.enableLights(true); // Enable lights
+            channel.enableVibration(true); // Enable vibration
+            channel.setLockscreenVisibility(NotificationCompat.VISIBILITY_PUBLIC); // Show on lock screen
+            channel.setBypassDnd(true); // Bypass Do Not Disturb for terminated app alarms
+            channel.setImportance(NotificationManager.IMPORTANCE_MAX); // Ensure maximum importance
+            
+            // Ensure notification shows even when app is terminated
+            channel.setShowBadge(false);
+            channel.enableLights(true);
+            channel.enableVibration(true);
             
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            // Delete any existing channels first
+            // Clean up any old notifications and channels
             try {
+                // Cancel any existing notifications to prevent duplication
+                notificationManager.cancel(NOTIFICATION_ID);
+                notificationManager.cancel(77777); // Emergency notification ID
+                notificationManager.cancel(88888); // Fallback notification ID
+                notificationManager.cancel(99999); // Old notification ID
+                
+                // Delete old channels
+                notificationManager.deleteNotificationChannel("alarm_audio_service");
+                notificationManager.deleteNotificationChannel("alarm_audio_service_v2");
+                notificationManager.deleteNotificationChannel("alarm_audio_service_v3");
+                notificationManager.deleteNotificationChannel("alarm_fallback_channel");
+                notificationManager.deleteNotificationChannel("alarm_emergency_channel");
                 notificationManager.deleteNotificationChannel(CHANNEL_ID);
             } catch (Exception e) {
-                // Ignore deletion errors
+                // Ignore cleanup errors
             }
+            
+            // Create the single notification channel
             notificationManager.createNotificationChannel(channel);
-            Log.d(TAG, "🔇 Minimal hidden notification channel created");
+            Log.d(TAG, "🎨 Fancy alarm notification channel created");
         }
     }
 
-    private Notification createHiddenNotification() {
-        // Create THE ONLY notification that will appear - exactly as user wants
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Silent") // Matches user's screenshot exactly
-            .setContentText("") // No text content
-            .setSmallIcon(android.R.drawable.ic_media_play) // Play button icon
-            .setPriority(NotificationCompat.PRIORITY_MIN) // Minimal priority
-            .setCategory(NotificationCompat.CATEGORY_SERVICE) // Service category
-            .setOngoing(false) // Can be dismissed
-            .setAutoCancel(true) // Auto dismiss
-            .setShowWhen(false) // No timestamp
-            .setSilent(true) // Silent notification
-            .build();
-    }
+    private Notification createFancyAlarmNotification() {
+        // Create TAP action - opens Java AlarmActivity (independent from React Native)
+        Intent tapIntent = new Intent(this, AlarmActivity.class);
+        tapIntent.setAction("OPEN_ALARM_SCREEN");
+        tapIntent.putExtra("alarmId", currentAlarmId != null ? currentAlarmId : "default");
+        tapIntent.putExtra("alarmTime", "Alarm Ringing");
+        tapIntent.putExtra("audioPath", currentAudioPath != null ? currentAudioPath : "");
+        // Enhanced flags to ensure AlarmActivity opens properly
+        tapIntent.addFlags(
+            Intent.FLAG_ACTIVITY_NEW_TASK | 
+            Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+            Intent.FLAG_ACTIVITY_SINGLE_TOP |
+            Intent.FLAG_ACTIVITY_CLEAR_TASK |
+            Intent.FLAG_ACTIVITY_NO_ANIMATION
+        );
+        PendingIntent tapPendingIntent = PendingIntent.getActivity(
+            this, 3, tapIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-    private Notification createProfessionalAlarmNotification(String alarmId) {
-        // Create dismiss action - stops the alarm completely
-        Intent dismissIntent = new Intent(this, AlarmAudioService.class);
-        dismissIntent.setAction(ACTION_STOP_ALARM);
-        PendingIntent dismissPendingIntent = PendingIntent.getService(
-            this, 1, dismissIntent, PendingIntent.FLAG_IMMUTABLE);
+        // Create STOP action button
+        Intent stopIntent = new Intent(this, AlarmActionReceiver.class);
+        stopIntent.setAction("STOP_ALARM");
+        stopIntent.putExtra("alarmId", currentAlarmId != null ? currentAlarmId : "default");
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(
+            this, 4, stopIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        // Create snooze action
+        // Create SNOOZE action button
         Intent snoozeIntent = new Intent(this, AlarmActionReceiver.class);
-        snoozeIntent.setAction("SNOOZE");
-        snoozeIntent.putExtra("alarmId", alarmId);
+        snoozeIntent.setAction("SNOOZE_ALARM");
+        // Create DISMISS ATTEMPT handler (swipe) -> open screen + re-notify
+        Intent dismissIntent = new Intent(this, AlarmActionReceiver.class);
+        dismissIntent.setAction("ALARM_NOTIFICATION_DISMISSED");
+        dismissIntent.putExtra("alarmId", currentAlarmId != null ? currentAlarmId : "default");
+        dismissIntent.putExtra("audioPath", currentAudioPath != null ? currentAudioPath : "");
+        PendingIntent deletePendingIntent = PendingIntent.getBroadcast(
+            this, 6, dismissIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        snoozeIntent.putExtra("alarmId", currentAlarmId != null ? currentAlarmId : "default");
         snoozeIntent.putExtra("audioPath", currentAudioPath != null ? currentAudioPath : "");
         PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(
-            this, 2, snoozeIntent, PendingIntent.FLAG_IMMUTABLE);
+            this, 5, snoozeIntent, PendingIntent.FLAG_IMMUTABLE);
 
-        // Create tap action - opens alarm activity
-        Intent tapIntent = new Intent(this, AlarmActivity.class);
-        tapIntent.putExtra(AlarmActivity.EXTRA_ALARM_ID, alarmId);
-        tapIntent.putExtra(AlarmActivity.EXTRA_ALARM_TIME, "Alarm Ringing");
-        tapIntent.putExtra(AlarmActivity.EXTRA_AUDIO_PATH, currentAudioPath != null ? currentAudioPath : "");
-        tapIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent tapPendingIntent = PendingIntent.getActivity(
-            this, 3, tapIntent, PendingIntent.FLAG_IMMUTABLE);
-
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Alarm Ringing")
-            .setContentText("Your custom alarm is playing")
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setPriority(NotificationCompat.PRIORITY_MAX) // Maximum priority
-            .setCategory(NotificationCompat.CATEGORY_CALL) // Call category - avoids system alarm triggers
-            .setOngoing(true) // Cannot be swiped away
-            .setAutoCancel(false) // Cannot be auto-dismissed
+        // Create FANCY notification with app branding and action buttons
+        String notificationTitle = "🚨 LFG Alarm Ringing";
+        String notificationBody = "Engine's warmed up! Time to hit the road, champ.";
+        
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle(notificationTitle)
+            .setContentText(notificationBody)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm) // Alarm icon
+            .setLargeIcon(android.graphics.BitmapFactory.decodeResource(getResources(), android.R.drawable.ic_dialog_info)) // App logo placeholder
+            .setPriority(NotificationCompat.PRIORITY_MAX) // MAXIMUM priority for terminated app visibility
+            .setCategory(NotificationCompat.CATEGORY_ALARM) // Alarm category
+            .setOngoing(true) // Cannot be dismissed by swipe
+            .setAutoCancel(false) // Cannot be auto-dismissed - CRITICAL for alarm service
+            .setDeleteIntent(deletePendingIntent) // Handle dismissal properly
             .setShowWhen(true) // Show timestamp
             .setWhen(System.currentTimeMillis()) // Current time
-            .setContentIntent(tapPendingIntent) // Tap to open alarm screen
-            .addAction(android.R.drawable.ic_media_pause, "Dismiss", dismissPendingIntent)
-            .addAction(android.R.drawable.ic_menu_recent_history, "Snooze", snoozePendingIntent)
-            .setFullScreenIntent(tapPendingIntent, true) // Auto-open on lock screen
+            // CRITICAL: Completely disable notification sound; media player handles audio (custom or default)
+            .setSound(null)
+            .setDefaults(0) // Disable all default notification sounds
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setLocalOnly(false) // Allow system to show notification
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE) // Disable badge
+            .setNumber(0) // No badge number
+            .setContentIntent(tapPendingIntent) // Main notification tap opens alarm screen
+            // Heads-up full-screen intent to ensure user has controls and can't miss it
+            .setFullScreenIntent(tapPendingIntent, true)
             .setVibrate(new long[]{0, 250, 250, 250}) // Vibration pattern
+            .setLights(android.graphics.Color.RED, 1000, 1000) // Red flashing light
+            .setStyle(new NotificationCompat.BigTextStyle()
+                .bigText(notificationBody))
+            // Add action buttons - Stop and Snooze
+            .addAction(android.R.drawable.ic_media_pause, "STOP", stopPendingIntent)
+            .addAction(android.R.drawable.ic_media_next, "SNOOZE", snoozePendingIntent)
             .build();
+
+        // Ensure the user cannot swipe this notification away
+        notification.flags |= Notification.FLAG_NO_CLEAR | Notification.FLAG_ONGOING_EVENT | Notification.FLAG_INSISTENT;
+        return notification;
     }
 
-    private Notification createAlarmNotification(String alarmId) {
-        // Stop action
-        Intent stopIntent = new Intent(this, AlarmAudioService.class);
-        stopIntent.setAction(ACTION_STOP_ALARM);
-        PendingIntent stopPendingIntent = PendingIntent.getService(
-            this, 1, stopIntent, PendingIntent.FLAG_IMMUTABLE);
+    // REMOVED: createProfessionalAlarmNotification - was creating duplicate notifications
 
-        // Snooze action - uses AlarmActionReceiver for snooze logic
-        Intent snoozeIntent = new Intent(this, AlarmActionReceiver.class);
-        snoozeIntent.setAction("SNOOZE");
-        snoozeIntent.putExtra("alarmId", alarmId);
-        snoozeIntent.putExtra("audioPath", currentAudioPath != null ? currentAudioPath : "");
-        PendingIntent snoozePendingIntent = PendingIntent.getBroadcast(
-            this, 2, snoozeIntent, PendingIntent.FLAG_IMMUTABLE);
+    // REMOVED: createAlarmNotification - was creating the "Alarm - 6:51 PM" duplicate notification
+    // REMOVED: getCurrentTime - no longer needed
 
-        // Open alarm activity action
-        Intent alarmActivityIntent = new Intent(this, AlarmActivity.class);
-        alarmActivityIntent.putExtra(AlarmActivity.EXTRA_ALARM_ID, alarmId);
-        alarmActivityIntent.putExtra(AlarmActivity.EXTRA_ALARM_TIME, "Alarm");
-        alarmActivityIntent.putExtra(AlarmActivity.EXTRA_AUDIO_PATH, currentAudioPath != null ? currentAudioPath : "");
-        alarmActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent alarmActivityPendingIntent = PendingIntent.getActivity(
-            this, 3, alarmActivityIntent, PendingIntent.FLAG_IMMUTABLE);
-
-        // Create notification that matches Android system format (the important one)
-        String currentTime = getCurrentTime();
-        String systemMessage = "It's " + currentTime + ". Your custom alarm is playing!";
-        
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Alarm - " + currentTime)
-            .setContentText(systemMessage)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setOngoing(true) // Cannot be swiped away
-            .setAutoCancel(false) // Cannot be auto-dismissed
-            .setShowWhen(true) // Show system timestamp like Android system
-            .setWhen(System.currentTimeMillis()) // Use current time
-            .setContentIntent(alarmActivityPendingIntent)
-            .addAction(android.R.drawable.ic_media_pause, "Stop", stopPendingIntent)
-            .addAction(android.R.drawable.ic_menu_recent_history, "Snooze 5min", snoozePendingIntent)
-            .setFullScreenIntent(alarmActivityPendingIntent, true) // Auto-open on lock screen
-            .setTimeoutAfter(0) // Never timeout
-            .setDeleteIntent(null) // Prevent deletion
-            .build();
-    }
-
-    private String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a", Locale.getDefault());
-        return sdf.format(new Date());
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null; // Not a bound service
+    }
+
+    /**
+     * PROFESSIONAL FIX: Cancel any system alarm notifications that might be playing default sound
+     */
+    private void cancelSystemAlarmNotifications() {
+        try {
+            Log.d(TAG, "🔇 PROFESSIONAL: Canceling any system alarm notifications...");
+            
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            
+            if (notificationManager != null) {
+                // Cancel common system alarm notification IDs
+                int[] systemAlarmIds = {
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, // Common system notification IDs
+                    100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, // Extended range
+                    1000, 1001, 1002, 1003, 1004, 1005, // Higher range
+                    -1, -2, -3, -4, -5 // Negative IDs sometimes used by system
+                };
+                
+                for (int id : systemAlarmIds) {
+                    try {
+                        notificationManager.cancel(id);
+                    } catch (Exception e) {
+                        // Ignore individual cancellation errors
+                    }
+                }
+                
+                // Also try to cancel by tag (some systems use tags)
+                String[] systemTags = {
+                    "alarm", "Alarm", "ALARM", "system_alarm", "SystemAlarm",
+                    "android_alarm", "AndroidAlarm", "default_alarm"
+                };
+                
+                for (String tag : systemTags) {
+                    try {
+                        notificationManager.cancel(tag, 1);
+                        notificationManager.cancel(tag, 2);
+                        notificationManager.cancel(tag, 3);
+                    } catch (Exception e) {
+                        // Ignore individual cancellation errors
+                    }
+                }
+                
+                Log.d(TAG, "✅ PROFESSIONAL: System alarm notifications canceled");
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Error canceling system alarm notifications", e);
+        }
     }
 
     @Override

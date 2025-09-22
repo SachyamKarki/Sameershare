@@ -10,15 +10,20 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ScrollView,
   Platform,
+  StatusBar,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import NativeAlarmService from '../services/NativeAlarmService';
 import NotificationService from '../services/NotificationService';
 import { useAlarm } from '../context/AlarmContext';
+import { Toast, CustomAlert, BackgroundComponent } from '../components';
+import { useTheme } from '../context';
 
 const NativeAlarmTestScreen = () => {
+  const navigation = useNavigation();
+  const { colors, darkMode } = useTheme();
   const [isNativeAvailable, setIsNativeAvailable] = useState(false);
   const [hasPermissions, setHasPermissions] = useState(false);
   const [testResults, setTestResults] = useState([]);
@@ -52,17 +57,10 @@ const NativeAlarmTestScreen = () => {
       
       if (success) {
         addTestResult('✅ IMMEDIATE alarm started! Check if audio is playing.', true);
-        Alert.alert(
-          '🚨 Immediate Alarm Test',
-          'Alarm should be playing NOW!\n\n' +
-          '• Check if you hear audio\n' +
-          '• Try terminating the app - audio should continue\n' +
-          '• Use Stop button to end test',
-          [
-            { text: 'Stop Test', onPress: stopCurrentAlarm },
-            { text: 'Keep Testing', style: 'default' }
-          ]
-        );
+        // Show success toast instead of blocking alert
+        Toast.success('🚨 Alarm Started!', 'Audio should be playing now');
+        addTestResult('💡 Try terminating the app - audio should continue playing', true);
+        addTestResult('🛑 Use Stop button below to end test when done', true);
       } else {
         addTestResult('❌ Failed to start immediate alarm', false);
       }
@@ -115,7 +113,7 @@ const NativeAlarmTestScreen = () => {
   const testCustomAudioAlarm = async () => {
     try {
       if (recordings.length === 0) {
-        Alert.alert('No Recordings', 'Please record some audio first to test custom audio alarms.');
+        Toast.warning('No Recordings', 'Please record some audio first to test custom audio alarms.');
         return;
       }
 
@@ -185,19 +183,41 @@ const NativeAlarmTestScreen = () => {
     setTestResults([]);
   };
 
+  const cancelAllAlarms = async () => {
+    try {
+      addTestResult('🧹 CLEARING ALL ALARMS (fixing 500 limit error)...');
+      const success = await NativeAlarmService.cancelAllAlarms();
+      
+      if (success) {
+        addTestResult('✅ ALL ALARMS CLEARED! 500 limit error should be fixed.', true);
+        Toast.success('✅ Success!', 'All alarms cleared. 500 limit error should be fixed.');
+      } else {
+        addTestResult('⚠️ Clear command sent (some alarms may have been cleared)', true);
+      }
+    } catch (error) {
+      addTestResult(`❌ Clear alarms error: ${error.message}`, false);
+    }
+  };
+
   if (Platform.OS !== 'android') {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Native Alarm Test</Text>
-        <Text style={styles.error}>
-          Native alarms are only available on Android
-        </Text>
-      </View>
+      <BackgroundComponent>
+        <View style={styles.container}>
+          <Text style={styles.title}>Native Alarm Test</Text>
+          <Text style={styles.error}>
+            Native alarms are only available on Android
+          </Text>
+        </View>
+      </BackgroundComponent>
     );
   }
 
+  const styles = createStyles(colors);
+
   return (
-    <ScrollView style={styles.container}>
+    <BackgroundComponent>
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} translucent={false} hidden={false} />
+      <ScrollView style={styles.container}>
       <Text style={styles.title}>🚨 Native Alarm Test</Text>
       
       {/* Status Section */}
@@ -221,13 +241,27 @@ const NativeAlarmTestScreen = () => {
         </View>
       </View>
 
+      {/* Battery Optimization Setup */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>🔋 Battery Optimization Setup</Text>
+        <TouchableOpacity
+          style={styles.setupButton}
+          onPress={() => navigation.navigate('BatteryOptimization')}
+        >
+          <Text style={styles.setupButtonText}>🛠️ Open Battery Setup Guide</Text>
+        </TouchableOpacity>
+        <Text style={styles.sectionSubtitle}>
+          Configure your device for reliable alarms (recommended for all users)
+        </Text>
+      </View>
+
       {/* Permission Warning */}
       {!hasPermissions && (
         <View style={styles.warningSection}>
           <Text style={styles.warningTitle}>⚠️ Permissions Required</Text>
           <Text style={styles.warningText}>
             To test native alarms, go to:
-            {'\n'}Settings → Apps → Practice → Special app access → Schedule exact alarms → Allow
+            {'\n'}Settings → Apps → Alarm Clock → Special app access → Schedule exact alarms → Allow
           </Text>
         </View>
       )}
@@ -277,6 +311,14 @@ const NativeAlarmTestScreen = () => {
         </TouchableOpacity>
 
         <TouchableOpacity 
+          style={styles.emergencyButton}
+          onPress={cancelAllAlarms}
+        >
+          <Text style={styles.emergencyButtonText}>🧹 CLEAR ALL ALARMS (Fix 500 Limit)</Text>
+          <Text style={styles.emergencyButtonSubtext}>Use this if you get "500 alarms" error</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
           style={styles.clearButton}
           onPress={clearTestResults}
         >
@@ -312,13 +354,14 @@ const NativeAlarmTestScreen = () => {
         </Text>
       </View>
     </ScrollView>
+    </BackgroundComponent>
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: 'transparent',
     padding: 20,
   },
   title: {
@@ -331,7 +374,7 @@ const styles = StyleSheet.create({
   statusSection: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: '#111',
+    backgroundColor: colors.cardBackground,
     borderRadius: 10,
   },
   sectionTitle: {
@@ -346,7 +389,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   statusLabel: {
-    color: '#FFF',
+    color: colors.text,
     fontSize: 16,
   },
   statusValue: {
@@ -362,7 +405,7 @@ const styles = StyleSheet.create({
   warningSection: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: '#333',
+    backgroundColor: colors.cardBackground,
     borderRadius: 10,
     borderColor: '#FFA500',
     borderWidth: 1,
@@ -374,8 +417,26 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   warningText: {
-    color: '#FFF',
+    color: colors.text,
     fontSize: 14,
+  },
+  setupButton: {
+    backgroundColor: '#2196F3',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  setupButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  sectionSubtitle: {
+    color: '#BBB',
+    fontSize: 12,
+    textAlign: 'center',
+    fontStyle: 'italic',
   },
   testSection: {
     marginBottom: 20,
@@ -423,6 +484,25 @@ const styles = StyleSheet.create({
   disabledButton: {
     backgroundColor: '#555',
   },
+  emergencyButton: {
+    backgroundColor: '#FF8C00',
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 15,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FFA500',
+  },
+  emergencyButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  emergencyButtonSubtext: {
+    color: '#FFE4B5',
+    fontSize: 12,
+    marginTop: 4,
+  },
   clearButton: {
     backgroundColor: '#666',
     padding: 15,
@@ -437,7 +517,7 @@ const styles = StyleSheet.create({
   resultsSection: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: '#111',
+    backgroundColor: colors.cardBackground,
     borderRadius: 10,
   },
   resultItem: {

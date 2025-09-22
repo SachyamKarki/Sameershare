@@ -1,11 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Animated } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useTheme } from '../../context';
+import { useTranslation } from 'react-i18next';
 
-const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const daysOfWeek = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 
-export default function DaysSelector({ selectedDays, setSelectedDays }) {
+export default function DaysSelector({ selectedDays, onDaysChange }) {
+  const { colors } = useTheme();
+  const { t } = useTranslation();
+
   const toggleDay = (day) => {
-    setSelectedDays((prev) =>
+    onDaysChange((prev) =>
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
   };
@@ -16,8 +21,9 @@ export default function DaysSelector({ selectedDays, setSelectedDays }) {
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
-        marginTop: 10,
-        marginBottom: 20,
+        marginTop: 5,
+        marginBottom: 10,
+        paddingHorizontal: 16,
       }}
     >
       {daysOfWeek.map((day) => {
@@ -29,27 +35,30 @@ export default function DaysSelector({ selectedDays, setSelectedDays }) {
             activeOpacity={0.8}
             style={{
               width: '31%',
-              marginBottom: 16,
-              borderRadius: 12, // smoother edges
-              backgroundColor: isSelected ? '#6C7A89' : '#374151',
+              marginBottom: 12,
+              borderRadius: 10,
+              backgroundColor: isSelected ? '#2A2A2A' : colors.cardBackground,
               paddingVertical: 14,
               alignItems: 'center',
-              // subtle shadow on selected
-              shadowColor: isSelected ? '#000' : 'transparent',
+              borderWidth: isSelected ? 2 : 1,
+              borderColor: isSelected ? colors.text : colors.border,
+              shadowColor: isSelected ? '#000000' : 'transparent',
               shadowOpacity: isSelected ? 0.3 : 0,
-              shadowRadius: isSelected ? 6 : 0,
-              shadowOffset: { width: 0, height: 3 },
-              elevation: isSelected ? 4 : 0, // Android shadow
+              shadowRadius: isSelected ? 4 : 0,
+              shadowOffset: { width: 0, height: 2 },
+              elevation: isSelected ? 4 : 0,
             }}
           >
             <Text
               style={{
-                color: isSelected ? '#F9FAFB' : '#D1D5DB',
-                fontWeight: '600',
-                fontSize: 18,
+                color: isSelected ? '#FFFFFF' : colors.subText,
+                fontWeight: '700',
+                fontSize: 16,
+                letterSpacing: 0.5,
+                fontFamily: 'Times New Roman',
               }}
             >
-              {day}
+              {t(`days.${day}`)}
             </Text>
           </TouchableOpacity>
         );

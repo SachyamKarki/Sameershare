@@ -211,7 +211,11 @@ class NativeAlarmService {
       // Convert audioUri to proper file path
       let audioPath = '';
       if (audioUri) {
-        if (audioUri.startsWith('file://')) {
+        if (audioUri === 'default_alarm_sound') {
+          // Pass the special identifier to Android - it will handle loading LFG audio from assets
+          audioPath = 'default_alarm_sound';
+          console.log(`🎵 Using LFG default audio identifier`);
+        } else if (audioUri.startsWith('file://')) {
           audioPath = audioUri.replace('file://', '');
         } else {
           audioPath = audioUri;

@@ -6,3 +6,6 @@
 
 export * from './time';
 export * from './audio';
+export * from './storageManager';
+export * from './audioProcessor';
+export * from './databaseManager';

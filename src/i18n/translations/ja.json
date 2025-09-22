@@ -1,0 +1,239 @@
+{
+    "common": {
+      "ok": "OK",
+      "cancel": "キャンセル",
+      "error": "エラー",
+      "numbers": ["０", "１", "２", "３", "４", "５", "６", "７", "８", "９"],
+      "save": "保存",
+      "done": "完了",
+      "success": "成功",
+      "delete": "削除"
+    },
+    "days": {
+      "mon": "月",
+      "tue": "火",
+      "wed": "水",
+      "thu": "木",
+      "fri": "金",
+      "sat": "土",
+      "sun": "日"
+    },
+    "time": {
+      "hr": "時",
+      "min": "分",
+      "am": "午前",
+      "pm": "午後"
+    },
+    "settings": "設定",
+    "about": {
+      "title": "カーアラームについて",
+      "version": "バージョン",
+      "description": "LFGは、自分の車のエンジン音で目覚めることができる初のアプリです。車の音を録音してカスタムアラームとして設定します。振動、音量の徐々に増加、設定可能なスヌーズ、視覚的アラートなどの高度な機能を備え、すべての目覚めがあなたの好みに合わせて調整されます。ユニークで革新的、完全にカスタマイズ可能なアラーム体験をお楽しみください。",
+      "itemTitle": "アプリ情報",
+      "status": "プロダクション準備完了"
+    },
+    "device": {
+      "title": "デバイス情報",
+      "brand": "ブランド",
+      "model": "モデル",
+      "os": "Androidバージョン",
+      "api": "APIレベル",
+      "memory": "メモリ",
+      "error": "デバイス情報を取得できませんでした",
+      "itemTitle": "デバイス情報"
+    },
+    "support": {
+      "itemTitle": "問題を報告",
+      "itemDesc": "フィードバックを送信またはバグを報告",
+      "subject": "カーサウンドアラーム - 問題報告",
+      "issueDescription": "問題の説明",
+      "steps": "再現手順",
+      "expected": "期待される動作",
+      "actual": "実際の動作",
+      "emailUnavailableTitle": "メールアプリが利用できません",
+      "emailUnavailableBody": "問題を手動で次の宛先に送信してください："
+    },
+    "rate": {
+      "itemTitle": "アプリを評価",
+      "itemDesc": "Google Playストアで評価してください",
+      "title": "アプリを評価",
+      "fallback": "Google Playストアで私たちのアプリを評価してください！"
+    },
+    "share": {
+      "itemTitle": "アプリを共有",
+      "itemDesc": "友達にこのアプリについて教える",
+      "title": "アプリを共有",
+      "message": "友達にこのアラームアプリについて教える！",
+      "copy": "リンクをコピー",
+      "copiedTitle": "リンクがコピーされました",
+      "copiedBody": "ダウンロードリンクがクリップボードにコピーされました！"
+    },
+    "privacy": {
+      "itemTitle": "プライバシーポリシー",
+      "itemDesc": "データの取り扱いについて",
+      "title": "プライバシーポリシー",
+      "body": "LFG\n\nカーサウンドアラームでは、プライバシーが重要です。..."
+    },
+    "connect": {
+      "itemTitle": "利用規約",
+      "itemDesc": "アプリ使用の規約",
+      "title": "利用規約",
+      "body": "カーサウンドアラームへようこそ。ダウンロードおよびインストールにより...",
+      "fallback": "ウェブサイトを開けませんでした。https://lfgburnego.com を手動で訪問してください。"
+    },
+    "alarm": {
+      "sound": "アラーム音",
+      "soundDesc": "アラームが鳴る際にオーディオを再生",
+      "vibration": "振動",
+      "vibrationDesc": "アラーム中にデバイスを振動させる",
+      "fadeIn": "優しい目覚め",
+      "fadeInDesc": "2秒間で音量を徐々に増加",
+      "volumeBoost": "音量ブースト",
+      "volumeBoostDesc": "深い眠りのための追加音量",
+      "snooze": "スヌーズ機能",
+      "snoozeDesc": "{{duration}}分間のスヌーズを許可",
+      "setHeader": "アラームを設定",
+      "savedTitle": "アラームが正常に保存されました！",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "アラームを保存できませんでした。もう一度お試しください。",
+      "defaultSoundName": "デフォルトのアラーム音"
+    },
+    "battery": {
+      "title": "バッテリー最適化",
+      "itemTitle": "バッテリー最適化",
+      "message": "信頼性の高いアラーム機能のために、このアプリのバッテリー最適化を無効にしてください。\n\nこれにより、デバイスが深いスリープモードでもアラームが動作します。",
+      "openSettings": "設定を開く",
+      "alreadyDone": "すでに完了",
+      "manualInstructions": "設定 > アプリ > カーアラーム > バッテリー > バッテリー最適化の解除に手動で移動してください",
+      "disabled": "バッテリー最適化が無効化されました - アラームは確実に動作します",
+      "needsDisable": "信頼性の高いアラームのためにバッテリー最適化を無効にしてください",
+      "ensureReliability": "深いスリープモードでもアラームが動作することを保証"
+    },
+    "batteryOptimization": {                
+        "title": "バッテリー最適化",
+        "itemTitle": "バッテリー最適化",
+        "message": "信頼性の高いアラーム機能のために、このアプリのバッテリー最適化を無効にしてください。\n\nこれにより、デバイスが深いスリープモードでもアラームが動作します。",
+        "ok": "OK",
+        "openSettings": "設定を開く",
+        "alreadyDone": "すでに完了",
+        "manualInstructions": "設定 > アプリ > カーアラーム > バッテリー > バッテリー最適化の解除に手動で移動してください",
+        "disabled": "バッテリー最適化が無効化されました - アラームは確実に動作します",
+        "needsDisable": "信頼性の高いアラームのためにバッテリー最適化を無効にしてください",
+        "ensureReliability": "深いスリープモードでもアラームが動作することを保証"
+      },    
+    "notifications": {
+      "itemTitle": "通知",
+      "enabled": "アラーム通知が有効化されています",
+      "disabled": "アラーム通知が無効化されています",
+      "permissionDeniedTitle": "権限が拒否されました",
+      "permissionDeniedMessage": "デバイス設定で通知を有効にしてください"
+    },
+    "settingsCommon": {
+      "title": "設定",
+      "subtitle": "アラーム体験をカスタマイズ",
+      "language": "言語",
+      "notifications": "通知",
+      "batteryOptimization": "バッテリー最適化",
+      "deleteRecordings": "すべての録音を削除",
+      "about": "について",
+      "privacy": "プライバシーポリシー",
+      "connect": "利用規約",
+      "support": "サポート",
+      "rate": "アプリを評価",
+      "share": "アプリを共有",
+      "deviceInfo": "デバイス情報",
+      "ok": "OK",
+      "cancel": "キャンセル",
+      "error": "エラー"
+    },
+    "storageManagement": {
+      "title": "ストレージ",
+      "description": "{{recordings}}件の録音、{{size}} MB、状態：{{status}}",
+      "alertTitle": "ストレージ情報",
+      "alertMessage": "{{recordings}}件の録音、{{size}} MB使用、{{cache}}件のキャッシュファイル",
+      "status": {
+        "normal": "正常",
+        "moderate": "中程度",
+        "high": "高"
+      }
+    },
+    "recordings": {
+      "title": "録音",
+      "noRecordingsYet": "まだ録音がありません",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "ホームタブでオーディオを録音するか、既存のオーディオファイルをインポートしてください",
+      "importAudioFiles": "オーディオファイルをインポート",
+      "renameRecording": "録音の名前変更",
+      "enterRecordingName": "録音名を入力してください",
+      "deleteRecording": "録音の削除",
+      "deleteRecordingConfirmMessage": "この録音を削除しますか？この操作は元に戻せません。",
+      "deleteTitle": "録音の削除",
+      "deleteMessage": "この録音を削除しますか？",
+      "deleteSuccessTitle": "録音が削除されました",
+      "deleteSuccessMessage": "録音が正常に削除されました。",
+      "edit": "編集",
+      "play": "再生",
+      "pause": "一時停止",
+      "setAlarm": "アラームを設定",
+      "loading": "読み込み中",
+      "uploadError": "オーディオファイルをアップロードできませんでした",
+      "playbackError": "オーディオファイルを再生できませんでした",
+      "renameError": "録音の名前変更中にエラーが発生しました。もう一度お試しください。",
+      "updateError": "更新機能が利用できません。もう一度お試しください。",
+      "deleteError": "録音の削除中にエラーが発生しました。",
+      "navigationError": "アラーム設定への移動中にエラーが発生しました。",
+      "importError": "オーディオファイルをインポートできませんでした",
+      "importSuccess": "オーディオファイルが正常にインポートされました",
+      "fileMissing": "ファイルが欠落または破損しています",
+      "playbackErrorTitle": "再生エラー",
+      "playbackErrorMessage": "録音を再生できません。ファイルが破損している可能性があります。",
+      "errorTitle": "ファイルエラー",
+      "unnamed": "名前のない録音",
+      "defaultName": "録音 {{number}}",
+      "lfgAudioDefaultName": "LFGオーディオ"
+    },
+    "deleteRecordings": {
+      "title": "すべての録音を削除",
+      "confirmMessage": "すべての録音を削除しますか？",
+      "confirm": "削除",
+      "successTitle": "録音が削除されました",
+      "successMessage": "すべての録音が削除されました"
+    },
+    "languageSelector": {
+      "title": "言語",
+      "confirmMessage": "言語を変更しますか？",
+      "confirm": "変更",
+      "successTitle": "言語が変更されました",
+      "successMessage": "言語が変更されました"
+    },
+    "recorder": {
+      "record": "録音",
+      "stop": "停止",
+      "stopping": "停止中...",
+      "upload": "アップロード",
+      "import": "インポート",
+      "or": "または",
+      "permission_denied": "録音にはマイクへのアクセスが必要です。",
+      "no_recording": "アクティブな録音はありません。",
+      "recording_failed": "録音を保存できませんでした。もう一度お試しください。",
+      "recording_empty": "録音が空です。オーディオがキャプチャされていません。マイクへのアクセスが許可されていることを確認してください。",
+      "recording_invalid": "録音が無効です",
+      "storage_error": "録音を永続的に保存できませんでした。もう一度お試しください。",
+      "file_too_large": "10MB未満のオーディオファイルを選択してください。",
+      "invalid_audio": "無効なオーディオ",
+      "upload_failed": "オーディオファイルをアップロードできませんでした。もう一度お試しください。",
+      "import_failed": "オーディオファイルをインポートできませんでした。もう一度お試しください。"
+    },
+    "alarmlist": {
+      "title": "あなたのアラーム",
+      "no_alarms": "アラームが設定されていません",
+      "create_first_alarm": "最初のアラームを作成して開始してください",
+      "delete": "削除",
+      "preview_unavailable": "プレビュー不可",
+      "preview_unavailable_body": "このアラームはシステムのデフォルト音を使用しており、ここではプレビューできません。短いアラームを設定してテストできます。",
+      "playback_error": "再生エラー",
+      "playback_error_body": "このアラーム音を再生できません。オーディオファイルが破損または欠落している可能性があります。",
+      "ok": "OK",
+      "no_days_selected": "選択された曜日がありません",
+      "everyday": "毎日"
+    }
+  }

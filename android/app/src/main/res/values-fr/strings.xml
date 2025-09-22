@@ -1,0 +1,6 @@
+<resources>
+    <string name="notif_title">Alarme en cours</string>
+    <string name="notif_body">Le moteur est chaud ! Il est temps de partir.</string>
+    <string name="stop_alarm">ARRÊTER</string>
+    <string name="snooze_alarm">RÉPÉTER</string>
+</resources>

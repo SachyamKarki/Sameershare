@@ -4,21 +4,28 @@
     "slug": "practice",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/images/lfglogo_foreground.png",
+    "userInterfaceStyle": "dark",
     "scheme": "practice",
+    "statusBar": {
+      "style": "light",
+      "backgroundColor": "#000000",
+      "hidden": false
+    },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "NSMicrophoneUsageDescription": "This app needs access to your microphone to record audio.",
-        "UIBackgroundModes": [
-          "audio",
-          "audio"
-        ]
+        "UIBackgroundModes": ["audio"]
       },
-      "bundleIdentifier": "com.shakshamkarki.practice"
+      "bundleIdentifier": "com.shakshamkarki.practice",
+      "statusBar": {
+        "style": "light",
+        "hidden": false
+      }
     },
     "android": {
+      "package": "com.shakshamkarki.practice",
       "permissions": [
         "RECORD_AUDIO",
         "MODIFY_AUDIO_SETTINGS",
@@ -30,7 +37,15 @@
         "android.permission.WAKE_LOCK",
         "android.permission.RECEIVE_BOOT_COMPLETED"
       ],
-      "package": "com.shakshamkarki.practice"
+      "statusBar": {
+        "style": "light",
+        "backgroundColor": "#000000",
+        "hidden": false
+      },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/lfglogo_foreground.png",
+        "backgroundImage": "./assets/images/lfglogodark.png"
+      }
     },
     "plugins": [
       [
@@ -39,7 +54,8 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ],
-      "expo-video"
+      "expo-video",
+      "expo-sqlite"
     ]
   }
 }

@@ -1,77 +1,113 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/alarm_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
-    android:padding="32dp">
+    android:fitsSystemWindows="false"
+    android:padding="0dp">
 
-    <!-- Alarm Icon -->
+    <ImageView
+        android:id="@+id/alarm_glow"
+        android:layout_width="280dp"
+        android:layout_height="280dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="-100dp"
+        android:src="@drawable/glow_circle"
+        android:scaleType="centerInside"
+        android:alpha="0.4" />
+
     <ImageView
         android:id="@+id/alarm_icon"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/ic_notification"
-        android:tint="#FFFFFF" />
+        android:layout_centerVertical="true"
+        android:layout_marginTop="-100dp"
+        android:src="@drawable/ic_alarm"
+        android:tint="#FFFFFF"
+        android:alpha="1.0"
+        android:scaleType="centerInside" />
 
-    <!-- Current Time Display -->
     <TextView
-        android:id="@+id/time_display"
+        android:id="@+id/alarm_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/alarm_icon"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:text="00:00"
+        android:text="@string/alarm_active_text"
         android:textColor="#FFFFFF"
-        android:textSize="48sp"
-        android:textStyle="bold" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:shadowColor="#000000"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="6" />
 
-    <!-- Alarm Label -->
-    <TextView
-        android:id="@+id/alarm_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/time_display"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="Alarm Ringing"
-        android:textColor="#CCCCCC"
-        android:textSize="18sp" />
 
-    <!-- Button Container -->
     <LinearLayout
+        android:id="@+id/button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="60dp"
+        android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingHorizontal="40dp"
+        android:weightSum="2">
 
-        <!-- Snooze Button -->
-        <Button
-            android:id="@+id/snooze_button"
-            android:layout_width="140dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/button_snooze"
-            android:text="Snooze"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <!-- Stop Button -->
         <Button
             android:id="@+id/stop_button"
-            android:layout_width="140dp"
-            android:layout_height="60dp"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:minWidth="0dp"
+            android:minHeight="120dp"
+            android:padding="0dp"
+            android:includeFontPadding="false"
+            android:text="@string/stop_alarm"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="1sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_circle_red"
+            android:layout_marginEnd="20dp"
+            android:layout_weight="1"
+            android:elevation="8dp"
+            android:shadowColor="#FF0000"
+            android:shadowDx="0"
+            android:shadowDy="4"
+            android:shadowRadius="8" />
+
+        <Button
+            android:id="@+id/snooze_button"
+            android:layout_width="0dp"
+            android:layout_height="120dp"
+            android:minWidth="0dp"
+            android:minHeight="120dp"
+            android:padding="0dp"
+            android:includeFontPadding="false"
+            android:text="@string/snooze_alarm"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMinTextSize="14sp"
+            android:autoSizeMaxTextSize="20sp"
+            android:autoSizeStepGranularity="1sp"
+            android:textStyle="bold"
+            android:background="@drawable/btn_circle_orange"
             android:layout_marginStart="20dp"
-            android:background="@drawable/button_stop"
-            android:text="Stop"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_weight="1"
+            android:elevation="8dp"
+            android:shadowColor="#FFA500"
+            android:shadowDx="0"
+            android:shadowDy="4"
+            android:shadowRadius="8" />
 
     </LinearLayout>
 

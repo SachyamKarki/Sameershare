@@ -1,0 +1,6 @@
+<resources>
+    <string name="notif_title">闹钟响了</string>
+    <string name="notif_body">发动机已预热！是时候出发了。</string>
+    <string name="stop_alarm">停止</string>
+    <string name="snooze_alarm">贪睡</string>
+</resources>

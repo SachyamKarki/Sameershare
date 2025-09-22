@@ -1,0 +1,239 @@
+{
+    "common": {
+      "ok": "确定",
+      "cancel": "取消",
+      "error": "错误",
+      "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "save": "保存",
+      "done": "完成",
+      "success": "成功",
+      "delete": "删除"
+    },
+    "days": {
+      "mon": "周一",
+      "tue": "周二",
+      "wed": "周三",
+      "thu": "周四",
+      "fri": "周五",
+      "sat": "周六",
+      "sun": "周日"
+    },
+    "time": {
+      "hr": "小时",
+      "min": "分钟",
+      "am": "上午",
+      "pm": "下午"
+    },
+    "settings": "设置",
+    "about": {
+      "title": "关于汽车闹钟",
+      "version": "版本",
+      "description": "LFG是首款让您用自己汽车的轰鸣声唤醒的应用程序。录制您的汽车声音并将其设置为自定义闹钟。凭借振动、渐进音量增加、可配置的贪睡功能和视觉警报等高级功能，每次唤醒都根据您的偏好量身定制。享受独特、创新且完全可定制的闹钟体验。",
+      "itemTitle": "应用信息",
+      "status": "准备生产"
+    },
+    "device": {
+      "title": "设备信息",
+      "brand": "品牌",
+      "model": "型号",
+      "os": "安卓版本",
+      "api": "API级别",
+      "memory": "内存",
+      "error": "无法获取设备信息",
+      "itemTitle": "设备信息"
+    },
+    "support": {
+      "itemTitle": "报告问题",
+      "itemDesc": "发送反馈或报告错误",
+      "subject": "汽车声音闹钟 - 问题报告",
+      "issueDescription": "问题描述",
+      "steps": "重现步骤",
+      "expected": "预期行为",
+      "actual": "实际行为",
+      "emailUnavailableTitle": "邮件应用不可用",
+      "emailUnavailableBody": "请手动将您的问题发送至："
+    },
+    "rate": {
+      "itemTitle": "评价应用",
+      "itemDesc": "在Google Play商店为我们评分",
+      "title": "评价应用",
+      "fallback": "请在Google Play商店为我们的应用评分！"
+    },
+    "share": {
+      "itemTitle": "分享应用",
+      "itemDesc": "告诉您的朋友关于此应用",
+      "title": "分享应用",
+      "message": "告诉您的朋友关于这个闹钟应用！",
+      "copy": "复制链接",
+      "copiedTitle": "链接已复制",
+      "copiedBody": "下载链接已复制到剪贴板！"
+    },
+    "privacy": {
+      "itemTitle": "隐私政策",
+      "itemDesc": "我们如何处理您的数据",
+      "title": "隐私政策",
+      "body": "LFG\n\n在汽车声音闹钟，您的隐私对我们很重要。..."
+    },
+    "connect": {
+      "itemTitle": "服务条款",
+      "itemDesc": "应用使用的条款和条件",
+      "title": "服务条款",
+      "body": "欢迎使用汽车声音闹钟。通过下载和安装...",
+      "fallback": "无法打开网站。请手动访问 https://lfgburnego.com。"
+    },
+    "alarm": {
+      "sound": "闹钟声音",
+      "soundDesc": "在闹钟响起时播放音频",
+      "vibration": "振动",
+      "vibrationDesc": "在闹钟期间振动设备",
+      "fadeIn": "柔和唤醒",
+      "fadeInDesc": "在2秒内逐渐增加音量",
+      "volumeBoost": "音量增强",
+      "volumeBoostDesc": "为重度睡眠者提供额外音量",
+      "snooze": "贪睡功能",
+      "snoozeDesc": "允许贪睡{{duration}}分钟",
+      "setHeader": "设置闹钟",
+      "savedTitle": "闹钟保存成功！",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "无法保存闹钟。请重试。",
+      "defaultSoundName": "默认闹钟声音"
+    },
+    "battery": {
+      "title": "电池优化",
+      "itemTitle": "电池优化",
+      "message": "为了确保闹钟功能可靠，请为此应用禁用电池优化。\n\n这确保设备在深度睡眠模式下也能正常工作。",
+      "openSettings": "打开设置",
+      "alreadyDone": "已完成",
+      "manualInstructions": "请手动前往设置 > 应用 > 汽车闹钟 > 电池 > 移除电池优化",
+      "disabled": "电池优化已禁用 - 闹钟将可靠运行",
+      "needsDisable": "请禁用电池优化以确保闹钟可靠",
+      "ensureReliability": "确保闹钟即使在深度睡眠模式下也能工作"
+    },
+      "batteryOptimization": {
+        "title": "电池优化",
+        "itemTitle": "电池优化",
+        "message": "为了确保闹钟正常工作，请禁用此应用的电池优化。\n\n1. 打开 设置 > 电池\n2. 查找“电池优化”或“应用电池使用情况”\n3. 找到此应用并设置为“不优化”\n4. 这样即使在深度休眠模式下，闹钟也能可靠工作。\n\n否则，Android 可能会在几分钟后停止闹钟。",
+        "ok": "确定",
+        "openSettings": "打开设置",
+        "alreadyDone": "已完成",
+        "manualInstructions": "请手动进入 设置 > 应用 > 闹钟应用 > 电池 > 移出电池优化",
+        "disabled": "已禁用电池优化 - 闹钟将可靠工作",
+        "needsDisable": "请禁用电池优化以确保闹钟可靠",
+        "ensureReliability": "确保闹钟即使在深度休眠模式下也能工作"
+      },    
+    "notifications": {
+      "itemTitle": "通知",
+      "enabled": "闹钟通知已启用",
+      "disabled": "闹钟通知已禁用",
+      "permissionDeniedTitle": "权限被拒绝",
+      "permissionDeniedMessage": "请在设备设置中启用通知"
+    },
+    "settingsCommon": {
+      "title": "设置",
+      "subtitle": "自定义您的闹钟体验",
+      "language": "语言",
+      "notifications": "通知",
+      "batteryOptimization": "电池优化",
+      "deleteRecordings": "删除所有录音",
+      "about": "关于",
+      "privacy": "隐私政策",
+      "connect": "服务条款",
+      "support": "支持",
+      "rate": "评价应用",
+      "share": "分享应用",
+      "deviceInfo": "设备信息",
+      "ok": "确定",
+      "cancel": "取消",
+      "error": "错误"
+    },
+    "storageManagement": {
+      "title": "存储",
+      "description": "{{recordings}}个录音，{{size}} MB，状态：{{status}}",
+      "alertTitle": "存储信息",
+      "alertMessage": "{{recordings}}个录音，{{size}} MB已使用，{{cache}}个缓存文件",
+      "status": {
+        "normal": "正常",
+        "moderate": "适中",
+        "high": "高"
+      }
+    },
+    "recordings": {
+      "title": "录音",
+      "noRecordingsYet": "暂无录音",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "在主页标签中开始录音或导入现有音频文件",
+      "importAudioFiles": "导入音频文件",
+      "renameRecording": "重命名录音",
+      "enterRecordingName": "输入录音名称",
+      "deleteRecording": "删除录音",
+      "deleteRecordingConfirmMessage": "您确定要删除此录音吗？此操作无法撤销。",
+      "deleteTitle": "删除录音",
+      "deleteMessage": "您确定要删除此录音吗？",
+      "deleteSuccessTitle": "录音已删除",
+      "deleteSuccessMessage": "录音已成功删除。",
+      "edit": "编辑",
+      "play": "播放",
+      "pause": "暂停",
+      "setAlarm": "设置闹钟",
+      "loading": "加载中",
+      "uploadError": "无法上传音频文件",
+      "playbackError": "无法播放音频文件",
+      "renameError": "重命名录音时出错。请重试。",
+      "updateError": "更新功能不可用。请重试。",
+      "deleteError": "删除录音时出错。",
+      "navigationError": "导航到闹钟设置时出错。",
+      "importError": "无法导入音频文件",
+      "importSuccess": "音频文件导入成功",
+      "fileMissing": "文件缺失或损坏",
+      "playbackErrorTitle": "播放错误",
+      "playbackErrorMessage": "无法播放录音。文件可能已损坏。",
+      "errorTitle": "文件错误",
+      "unnamed": "未命名录音",
+      "defaultName": "录音 {{number}}",
+      "lfgAudioDefaultName": "LFG 音频"
+    },
+    "deleteRecordings": {
+      "title": "删除所有录音",
+      "confirmMessage": "您确定要删除所有录音吗？",
+      "confirm": "删除",
+      "successTitle": "录音已删除",
+      "successMessage": "所有录音已删除"
+    },
+    "languageSelector": {
+      "title": "语言",
+      "confirmMessage": "您确定要更改语言吗？",
+      "confirm": "更改",
+      "successTitle": "语言已更改",
+      "successMessage": "语言已更改"
+    },
+    "recorder": {
+      "record": "录音",
+      "stop": "停止",
+      "stopping": "正在停止...",
+      "upload": "上传",
+      "import": "导入",
+      "or": "或",
+      "permission_denied": "录音需要麦克风访问权限。",
+      "no_recording": "没有正在进行的录音。",
+      "recording_failed": "无法保存录音。请重试。",
+      "recording_empty": "录音为空。未捕获音频。请确保允许麦克风访问。",
+      "recording_invalid": "录音无效",
+      "storage_error": "无法永久保存录音。请重试。",
+      "file_too_large": "请选择小于10MB的音频文件。",
+      "invalid_audio": "无效音频",
+      "upload_failed": "无法上传音频文件。请重试。",
+      "import_failed": "无法导入音频文件。请重试。"
+    },
+    "alarmlist": {
+      "title": "您的闹钟",
+      "no_alarms": "未设置闹钟",
+      "create_first_alarm": "创建您的第一个闹钟以开始",
+      "delete": "删除",
+      "preview_unavailable": "预览不可用",
+      "preview_unavailable_body": "此闹钟使用系统默认声音，无法在此预览。您可以通过设置一个短时闹钟来测试。",
+      "playback_error": "播放错误",
+      "playback_error_body": "无法播放此闹钟声音。音频文件可能已损坏或缺失。",
+      "ok": "确定",
+      "no_days_selected": "未选择日期",
+      "everyday": "每天"
+    }
+  }

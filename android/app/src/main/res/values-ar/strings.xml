@@ -1,0 +1,6 @@
+<resources>
+    <string name="notif_title">جرس الإنذار</string>
+    <string name="notif_body">المحرك جاهز! حان وقت الانطلاق.</string>
+    <string name="stop_alarm">إيقاف</string>
+    <string name="snooze_alarm">غفوة</string>
+</resources>

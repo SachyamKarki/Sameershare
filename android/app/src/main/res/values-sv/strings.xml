@@ -1,0 +1,6 @@
+<resources>
+    <string name="notif_title">Alarmet ringer</string>
+    <string name="notif_body">Motorn är varm! Dags att ge sig av.</string>
+    <string name="stop_alarm">STOPPA</string>
+    <string name="snooze_alarm">SNOOZA</string>
+</resources>

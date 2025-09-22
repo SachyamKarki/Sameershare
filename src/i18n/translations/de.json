@@ -1,0 +1,239 @@
+{
+    "common": {
+      "ok": "OK",
+      "cancel": "Abbrechen",
+      "error": "Fehler",
+      "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "save": "Speichern",
+      "done": "Fertig",
+      "success": "Erfolg",
+      "delete": "Löschen"
+    },
+    "days": {
+      "mon": "MO",
+      "tue": "DI",
+      "wed": "MI",
+      "thu": "DO",
+      "fri": "FR",
+      "sat": "SA",
+      "sun": "SO"
+    },
+    "time": {
+      "hr": "Stunde",
+      "min": "Minute",
+      "am": "Vorm.",
+      "pm": "Nachm."
+    },
+    "settings": "Einstellungen",
+    "about": {
+      "title": "Über Autoalarm",
+      "version": "Version",
+      "description": "LFG ist die erste App, mit der Sie mit dem Brüllen Ihres eigenen Autos aufwachen können. Nehmen Sie die Geräusche Ihres Autos auf und stellen Sie sie als individuellen Alarm ein. Mit erweiterten Funktionen wie Vibration, schrittweiser Lautstärkeerhöhung, konfigurierbarem Schlummern und visuellen Benachrichtigungen wird jedes Aufwachen an Ihre Vorlieben angepasst. Genießen Sie ein einzigartiges, innovatives und vollständig anpassbares Alarmerlebnis.",
+      "itemTitle": "App-Informationen",
+      "status": "Bereit für die Produktion"
+    },
+    "device": {
+      "title": "Geräteinformationen",
+      "brand": "Marke",
+      "model": "Modell",
+      "os": "Android-Version",
+      "api": "API-Level",
+      "memory": "Speicher",
+      "error": "Geräteinformationen konnten nicht abgerufen werden",
+      "itemTitle": "Geräteinformationen"
+    },
+    "support": {
+      "itemTitle": "Problem melden",
+      "itemDesc": "Feedback senden oder einen Fehler melden",
+      "subject": "Auto-Sound-Alarm - Problemmeldung",
+      "issueDescription": "Problembeschreibung",
+      "steps": "Schritte zur Reproduktion",
+      "expected": "Erwartetes Verhalten",
+      "actual": "Tatsächliches Verhalten",
+      "emailUnavailableTitle": "E-Mail-App nicht verfügbar",
+      "emailUnavailableBody": "Bitte senden Sie Ihr Problem manuell an:"
+    },
+    "rate": {
+      "itemTitle": "App bewerten",
+      "itemDesc": "Bewerten Sie uns im Google Play Store",
+      "title": "App bewerten",
+      "fallback": "Bitte bewerten Sie unsere App im Google Play Store!"
+    },
+    "share": {
+      "itemTitle": "App teilen",
+      "itemDesc": "Erzählen Sie Ihren Freunden von dieser App",
+      "title": "App teilen",
+      "message": "Erzählen Sie Ihren Freunden von dieser Alarm-App!",
+      "copy": "Link kopieren",
+      "copiedTitle": "Link kopiert",
+      "copiedBody": "Download-Link in die Zwischenablage kopiert!"
+    },
+    "privacy": {
+      "itemTitle": "Datenschutzrichtlinie",
+      "itemDesc": "Wie wir mit Ihren Daten umgehen",
+      "title": "Datenschutzrichtlinie",
+      "body": "LFG\n\nBei Auto-Sound-Alarm ist Ihre Privatsphäre wichtig für uns. ..."
+    },
+    "connect": {
+      "itemTitle": "Nutzungsbedingungen",
+      "itemDesc": "Bedingungen für die Nutzung der App",
+      "title": "Nutzungsbedingungen",
+      "body": "Willkommen bei Auto-Sound-Alarm. Durch Herunterladen und Installieren...",
+      "fallback": "Website konnte nicht geöffnet werden. Bitte besuchen Sie https://lfgburnego.com manuell."
+    },
+    "alarm": {
+      "sound": "Alarmton",
+      "soundDesc": "Audio abspielen, wenn Alarme ausgelöst werden",
+      "vibration": "Vibration",
+      "vibrationDesc": "Gerät während Alarme vibrieren lassen",
+      "fadeIn": "Sanftes Aufwachen",
+      "fadeInDesc": "Lautstärke über 2 Sekunden schrittweise erhöhen",
+      "volumeBoost": "Lautstärke-Boost",
+      "volumeBoostDesc": "Zusätzliche Lautstärke für Tiefschläfer",
+      "snooze": "Schlummerfunktion",
+      "snoozeDesc": "Schlummern für {{duration}} Minuten erlauben",
+      "setHeader": "ALARM EINSTELLEN",
+      "savedTitle": "Alarm erfolgreich gespeichert!",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "Fehler beim Speichern des Alarms. Bitte versuchen Sie es erneut.",
+      "defaultSoundName": "Standard-Alarmton"
+    },
+    "battery": {
+      "title": "Batterieoptimierung",
+      "itemTitle": "Batterieoptimierung",
+      "message": "Für eine zuverlässige Alarmfunktion deaktivieren Sie bitte die Batterieoptimierung für diese App.\n\nDies stellt sicher, dass Alarme auch im Tiefschlafmodus des Geräts funktionieren.",
+      "openSettings": "Einstellungen öffnen",
+      "alreadyDone": "Bereits erledigt",
+      "manualInstructions": "Bitte gehen Sie manuell zu Einstellungen > Apps > Auto-Sound-Alarm > Batterie > Aus Batterieoptimierung entfernen",
+      "disabled": "Batterieoptimierung deaktiviert - Alarme funktionieren zuverlässig",
+      "needsDisable": "Bitte deaktivieren Sie die Batterieoptimierung für zuverlässige Alarme",
+      "ensureReliability": "Stellen Sie sicher, dass Alarme auch im Tiefschlafmodus funktionieren"
+    },
+    "batteryOptimization": {  
+        "title": "Batterieoptimierung",
+        "itemTitle": "Batterieoptimierung",
+        "message": "Für eine zuverlässige Alarmfunktion deaktivieren Sie bitte die Batterieoptimierung für diese App.\n\nDies stellt sicher, dass Alarme auch im Tiefschlafmodus des Geräts funktionieren.",
+        "ok": "OK",
+        "openSettings": "Einstellungen öffnen",
+        "alreadyDone": "Bereits erledigt",
+        "manualInstructions": "Bitte gehen Sie manuell zu Einstellungen > Apps > Auto-Sound-Alarm > Batterie > Aus Batterieoptimierung entfernen",
+        "disabled": "Batterieoptimierung deaktiviert - Alarme funktionieren zuverlässig",
+        "needsDisable": "Bitte deaktivieren Sie die Batterieoptimierung für zuverlässige Alarme",
+        "ensureReliability": "Stellen Sie sicher, dass Alarme auch im Tiefschlafmodus funktionieren"
+      },
+    "notifications": {
+      "itemTitle": "Benachrichtigungen",
+      "enabled": "Alarmbenachrichtigungen aktiviert",
+      "disabled": "Alarmbenachrichtigungen deaktiviert",
+      "permissionDeniedTitle": "Berechtigung verweigert",
+      "permissionDeniedMessage": "Bitte aktivieren Sie Benachrichtigungen in den Geräteeinstellungen"
+    },
+    "settingsCommon": {
+      "title": "Einstellungen",
+      "subtitle": "Passen Sie Ihre Wecker-Erfahrung an",
+      "language": "Sprache",
+      "notifications": "Benachrichtigungen",
+      "batteryOptimization": "Batterieoptimierung",
+      "deleteRecordings": "Alle Aufnahmen löschen",
+      "about": "Über",
+      "privacy": "Datenschutzrichtlinie",
+      "connect": "Nutzungsbedingungen",
+      "support": "Support",
+      "rate": "App bewerten",
+      "share": "App teilen",
+      "deviceInfo": "Geräteinformationen",
+      "ok": "OK",
+      "cancel": "Abbrechen",
+      "error": "Fehler"
+    },
+    "storageManagement": {
+      "title": "Speicher",
+      "description": "{{recordings}} Aufnahmen, {{size}} MB, Status: {{status}}",
+      "alertTitle": "Speicherinformationen",
+      "alertMessage": "{{recordings}} Aufnahmen, {{size}} MB verwendet, {{cache}} Cache-Dateien",
+      "status": {
+        "normal": "Normal",
+        "moderate": "Moderat",
+        "high": "Hoch"
+      }
+    },
+    "recordings": {
+      "title": "Aufnahmen",
+      "noRecordingsYet": "Noch keine Aufnahmen",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "Beginnen Sie mit der Aufnahme von Audio im Home-Tab oder importieren Sie vorhandene Audiodateien",
+      "importAudioFiles": "Audiodateien importieren",
+      "renameRecording": "Aufnahme umbenennen",
+      "enterRecordingName": "Name der Aufnahme eingeben",
+      "deleteRecording": "Aufnahme löschen",
+      "deleteRecordingConfirmMessage": "Sind Sie sicher, dass Sie diese Aufnahme löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+      "deleteTitle": "Aufnahme löschen",
+      "deleteMessage": "Sind Sie sicher, dass Sie diese Aufnahme löschen möchten?",
+      "deleteSuccessTitle": "Aufnahme gelöscht",
+      "deleteSuccessMessage": "Die Aufnahme wurde erfolgreich gelöscht.",
+      "edit": "Bearbeiten",
+      "play": "Abspielen",
+      "pause": "Pausieren",
+      "setAlarm": "Alarm einstellen",
+      "loading": "Laden",
+      "uploadError": "Audiodatei konnte nicht hochgeladen werden",
+      "playbackError": "Audiodatei konnte nicht abgespielt werden",
+      "renameError": "Fehler beim Umbenennen der Aufnahme. Bitte versuchen Sie es erneut.",
+      "updateError": "Update-Funktion nicht verfügbar. Bitte versuchen Sie es erneut.",
+      "deleteError": "Fehler beim Löschen der Aufnahme.",
+      "navigationError": "Fehler beim Navigieren zu den Alarmeinstellungen.",
+      "importError": "Audiodatei konnte nicht importiert werden",
+      "importSuccess": "Audiodatei erfolgreich importiert",
+      "fileMissing": "Datei fehlt oder ist beschädigt",
+      "playbackErrorTitle": "Wiedergabefehler",
+      "playbackErrorMessage": "Aufnahme konnte nicht abgespielt werden. Die Datei ist möglicherweise beschädigt.",
+      "errorTitle": "Dateifehler",
+      "unnamed": "Unbenannte Aufnahme",
+      "defaultName": "Aufnahme {{number}}",
+      "lfgAudioDefaultName": "LFG-Audio"
+    },
+    "deleteRecordings": {
+      "title": "Alle Aufnahmen löschen",
+      "confirmMessage": "Sind Sie sicher, dass Sie alle Aufnahmen löschen möchten?",
+      "confirm": "Löschen",
+      "successTitle": "Aufnahmen gelöscht",
+      "successMessage": "Alle Aufnahmen wurden gelöscht"
+    },
+    "languageSelector": {
+      "title": "Sprache",
+      "confirmMessage": "Sind Sie sicher, dass Sie die Sprache ändern möchten?",
+      "confirm": "Ändern",
+      "successTitle": "Sprache geändert",
+      "successMessage": "Die Sprache wurde geändert"
+    },
+    "recorder": {
+      "record": "Aufnehmen",
+      "stop": "Stoppen",
+      "stopping": "Stoppen...",
+      "upload": "Hochladen",
+      "import": "Importieren",
+      "or": "oder",
+      "permission_denied": "Zugriff auf das Mikrofon ist für die Aufnahme erforderlich.",
+      "no_recording": "Keine aktive Aufnahme.",
+      "recording_failed": "Aufnahme konnte nicht gespeichert werden. Bitte versuchen Sie es erneut.",
+      "recording_empty": "Aufnahme ist leer. Es wurde kein Audio aufgenommen. Stellen Sie sicher, dass der Mikrofonzugriff erlaubt ist.",
+      "recording_invalid": "Ungültige Aufnahme",
+      "storage_error": "Aufnahme konnte nicht dauerhaft gespeichert werden. Bitte versuchen Sie es erneut.",
+      "file_too_large": "Bitte wählen Sie eine Audiodatei unter 10 MB.",
+      "invalid_audio": "Ungültiges Audio",
+      "upload_failed": "Audiodatei konnte nicht hochgeladen werden. Bitte versuchen Sie es erneut.",
+      "import_failed": "Audiodatei konnte nicht importiert werden. Bitte versuchen Sie es erneut."
+    },
+    "alarmlist": {
+      "title": "Ihre Alarme",
+      "no_alarms": "Keine Alarme eingestellt",
+      "create_first_alarm": "Erstellen Sie Ihren ersten Alarm, um zu beginnen",
+      "delete": "Löschen",
+      "preview_unavailable": "Vorschau nicht verfügbar",
+      "preview_unavailable_body": "Dieser Alarm verwendet den Standard-Systemton, der hier nicht vorgespielt werden kann. Sie können ihn testen, indem Sie einen kurzen Alarm einstellen.",
+      "playback_error": "Wiedergabefehler",
+      "playback_error_body": "Dieser Alarmton konnte nicht abgespielt werden. Die Audiodatei ist möglicherweise beschädigt oder fehlt.",
+      "ok": "OK",
+      "no_days_selected": "Keine Tage ausgewählt",
+      "everyday": "JEDEN TAG"
+    }
+  }

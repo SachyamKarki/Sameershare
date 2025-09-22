@@ -1,0 +1,238 @@
+{
+    "common": {
+      "ok": "OK",
+      "cancel": "Annulla",
+      "error": "Errore",
+      "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "save": "Salva",
+      "done": "Completato",
+      "success": "Successo"
+    },
+    "days": {
+      "mon": "LUN",
+      "tue": "MAR",
+      "wed": "MER",
+      "thu": "GIO",
+      "fri": "VEN",
+      "sat": "SAB",
+      "sun": "DOM"
+    },
+    "time": {
+      "hr": "Ora",
+      "min": "Min",
+      "am": "AM",
+      "pm": "PM"
+    },
+    "settings": "Impostazioni",
+    "about": {
+      "title": "Informazioni su Allarme Auto",
+      "version": "Versione",
+      "description": "LFG è la prima app che ti permette di svegliarti con il rombo della tua auto. Registra i suoni della tua auto e impostali come allarme personalizzato. Con funzionalità avanzate come vibrazione, aumento graduale del volume, snooze configurabile e avvisi visivi, ogni risveglio è personalizzato secondo le tue preferenze. Goditi un'esperienza di allarme unica, innovativa e completamente personalizzabile.",
+      "itemTitle": "Informazioni sull'app",
+      "status": "Pronto per la produzione"
+    },
+    "device": {
+      "title": "Informazioni sul dispositivo",
+      "brand": "Marca",
+      "model": "Modello",
+      "os": "Versione Android",
+      "api": "Livello API",
+      "memory": "Memoria",
+      "error": "Impossibile ottenere le informazioni sul dispositivo",
+      "itemTitle": "Informazioni sul dispositivo"
+    },
+    "support": {
+      "itemTitle": "Segnala un problema",
+      "itemDesc": "Invia feedback o segnala un bug",
+      "subject": "Allarme Suono Auto - Segnalazione problema",
+      "issueDescription": "Descrizione del problema",
+      "steps": "Passaggi per riprodurre",
+      "expected": "Comportamento atteso",
+      "actual": "Comportamento effettivo",
+      "emailUnavailableTitle": "App di posta non disponibile",
+      "emailUnavailableBody": "Per favore, invia il tuo problema manualmente a:"
+    },
+    "rate": {
+      "itemTitle": "Valuta l'app",
+      "itemDesc": "Valutaci sul Google Play Store",
+      "title": "Valuta l'app",
+      "fallback": "Per favore, valuta la nostra app sul Google Play Store!"
+    },
+    "share": {
+      "itemTitle": "Condividi l'app",
+      "itemDesc": "Parla di questa app ai tuoi amici",
+      "title": "Condividi l'app",
+      "message": "Parla di questa app di allarme ai tuoi amici!",
+      "copy": "Copia link",
+      "copiedTitle": "Link copiato",
+      "copiedBody": "Link di download copiato negli appunti!"
+    },
+    "privacy": {
+      "itemTitle": "Politica sulla privacy",
+      "itemDesc": "Come gestiamo i tuoi dati",
+      "title": "Politica sulla privacy",
+      "body": "LFG\n\nIn Allarme Suono Auto, la tua privacy è importante per noi. ..."
+    },
+    "connect": {
+      "itemTitle": "Termini di servizio",
+      "itemDesc": "Termini e condizioni per l'uso dell'app",
+      "title": "Termini di servizio",
+      "body": "Benvenuto in Allarme Suono Auto. Scaricando e installando...",
+      "fallback": "Website non può essere aperta. Per favore, visita https://lfgburnego.com manualmente."
+    },
+    "alarm": {
+      "sound": "Suono dell'allarme",
+      "soundDesc": "Riproduci audio quando gli allarmi vengono attivati",
+      "vibration": "Vibrazione",
+      "vibrationDesc": "Fai vibrare il dispositivo durante gli allarmi",
+      "fadeIn": "Risveglio graduale",
+      "fadeInDesc": "Aumenta gradualmente il volume in 2 secondi",
+      "volumeBoost": "Amplificazione del volume",
+      "volumeBoostDesc": "Volume extra per chi dorme profondamente",
+      "snooze": "Funzione snooze",
+      "snoozeDesc": "Consenti lo snooze per {{duration}} minuti",
+      "setHeader": "IMPOSTA ALLARME",
+      "savedTitle": "Allarme salvato con successo!",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "Impossibile salvare l'allarme. Riprova.",
+      "defaultSoundName": "Suono allarme predefinito"
+    },
+    "battery": {
+      "title": "Ottimizzazione della batteria",
+      "itemTitle": "Ottimizzazione della batteria",
+      "message": "Per una funzionalità di allarme affidabile, disattiva l'ottimizzazione della batteria per questa app.\n\nQuesto assicura che gli allarmi funzionino anche quando il dispositivo è in modalità di sospensione profonda.",
+      "openSettings": "Apri impostazioni",
+      "alreadyDone": "Già fatto",
+      "manualInstructions": "Per favore, vai manualmente a Impostazioni > App > Allarme Auto > Batteria > Rimuovi dall'ottimizzazione della batteria",
+      "disabled": "Ottimizzazione della batteria disattivata - gli allarmi funzioneranno in modo affidabile",
+      "needsDisable": "Disattiva l'ottimizzazione della batteria per allarmi affidabili",
+      "ensureReliability": "Assicurati che gli allarmi funzionino anche in modalità di sospensione profonda"
+    },
+    "batteryOptimization": {        
+        "title": "Ottimizzazione della batteria",
+        "itemTitle": "Ottimizzazione della batteria",
+        "message": "Per una funzionalità di allarme affidabile, disattiva l'ottimizzazione della batteria per questa app.\n\nQuesto assicura che gli allarmi funzionino anche quando il dispositivo è in modalità di sospensione profonda.",
+        "ok": "OK",
+        "openSettings": "Apri impostazioni",
+        "alreadyDone": "Già fatto",
+        "manualInstructions": "Per favore, vai manualmente a Impostazioni > App > Allarme Auto > Batteria > Rimuovi dall'ottimizzazione della batteria",
+        "disabled": "Ottimizzazione della batteria disattivata - gli allarmi funzioneranno in modo affidabile",
+        "needsDisable": "Disattiva l'ottimizzazione della batteria per allarmi affidabili",
+        "ensureReliability": "Assicurati che gli allarmi funzionino anche in modalità di sospensione profonda"
+      },
+    "notifications": {
+      "itemTitle": "Notifiche",
+      "enabled": "Notifiche di allarme attivate",
+      "disabled": "Notifiche di allarme disattivate",
+      "permissionDeniedTitle": "Permesso negato",
+      "permissionDeniedMessage": "Abilita le notifiche nelle impostazioni del dispositivo"
+    },
+    "settingsCommon": {
+      "title": "Impostazioni",
+      "subtitle": "Personalizza la tua esperienza sveglia",
+      "language": "Lingua",
+      "notifications": "Notifiche",
+      "batteryOptimization": "Ottimizzazione della batteria",
+      "deleteRecordings": "Elimina tutte le registrazioni",
+      "about": "Informazioni",
+      "privacy": "Politica sulla privacy",
+      "connect": "Connetti con noi",
+      "support": "Supporto",
+      "rate": "Valuta l'app",
+      "share": "Condividi l'app",
+      "deviceInfo": "Informazioni sul dispositivo",
+      "ok": "OK",
+      "cancel": "Annulla",
+      "error": "Errore"
+    },
+    "storageManagement": {
+      "title": "Archiviazione",
+      "description": "{{recordings}} registrazioni, {{size}} MB, Stato: {{status}}",
+      "alertTitle": "Informazioni sull'archiviazione",
+      "alertMessage": "{{recordings}} registrazioni, {{size}} MB utilizzati, {{cache}} file di cache",
+      "status": {
+        "normal": "Normale",
+        "moderate": "Moderato",
+        "high": "Alto"
+      }
+    },
+    "recordings": {
+      "title": "Registrazioni",
+      "noRecordingsYet": "Nessuna registrazione ancora",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "Inizia registrando l'audio nella scheda Home o importa file audio esistenti",
+      "importAudioFiles": "Importa file audio",
+      "renameRecording": "Rinomina registrazione",
+      "enterRecordingName": "Inserisci il nome della registrazione",
+      "deleteRecording": "Elimina registrazione",
+      "deleteRecordingConfirmMessage": "Sei sicuro di voler eliminare questa registrazione? Questa azione non può essere annullata.",
+      "deleteTitle": "Elimina registrazione",
+      "deleteMessage": "Sei sicuro di voler eliminare questa registrazione?",
+      "deleteSuccessTitle": "Registrazione eliminata",
+      "deleteSuccessMessage": "La registrazione è stata eliminata con successo.",
+      "edit": "Modifica",
+      "play": "Riproduci",
+      "pause": "Pausa",
+      "setAlarm": "Imposta allarme",
+      "loading": "Caricamento",
+      "uploadError": "Impossibile caricare il file audio",
+      "playbackError": "Impossibile riprodurre il file audio",
+      "renameError": "Errore nel rinominare la registrazione. Riprova.",
+      "updateError": "Funzione di aggiornamento non disponibile. Riprova.",
+      "deleteError": "Errore nell'eliminazione della registrazione.",
+      "navigationError": "Errore nella navigazione verso le impostazioni dell'allarme.",
+      "importError": "Impossibile importare il file audio",
+      "importSuccess": "File audio importato con successo",
+      "fileMissing": "File mancante o corrotto",
+      "playbackErrorTitle": "Errore di riproduzione",
+      "playbackErrorMessage": "Impossibile riprodurre la registrazione. Il file potrebbe essere corrotto.",
+      "errorTitle": "Errore file",
+      "unnamed": "Registrazione senza nome",
+      "defaultName": "Registrazione {{number}}",
+      "lfgAudioDefaultName": "Audio LFG"
+    },
+    "deleteRecordings": {
+      "title": "Elimina tutte le registrazioni",
+      "confirmMessage": "Sei sicuro di voler eliminare tutte le registrazioni?",
+      "confirm": "Elimina",
+      "successTitle": "Registrazioni eliminate",
+      "successMessage": "Tutte le registrazioni sono state eliminate"
+    },
+    "languageSelector": {
+      "title": "Lingua",
+      "confirmMessage": "Sei sicuro di voler cambiare lingua?",
+      "confirm": "Cambia",
+      "successTitle": "Lingua cambiata",
+      "successMessage": "La lingua è stata cambiata"
+    },
+    "recorder": {
+      "record": "Registra",
+      "stop": "Ferma",
+      "stopping": "Arresto in corso...",
+      "upload": "Carica",
+      "import": "Importa",
+      "or": "o",
+      "permission_denied": "È richiesto l'accesso al microfono per la registrazione.",
+      "no_recording": "Nessuna registrazione attiva.",
+      "recording_failed": "Impossibile salvare la registrazione. Riprova.",
+      "recording_empty": "La registrazione è vuota. Nessun audio è stato catturato. Assicurati che l'accesso al microfono sia consentito.",
+      "recording_invalid": "Registrazione non valida",
+      "storage_error": "Impossibile salvare la registrazione in modo permanente. Riprova.",
+      "file_too_large": "Seleziona un file audio inferiore a 10 MB.",
+      "invalid_audio": "Audio non valido",
+      "upload_failed": "Impossibile caricare il file audio. Riprova.",
+      "import_failed": "Impossibile importare il file audio. Riprova."
+    },
+    "alarmlist": {
+      "title": "I tuoi allarmi",
+      "no_alarms": "Nessun allarme impostato",
+      "create_first_alarm": "Crea il tuo primo allarme per iniziare",
+      "delete": "Elimina",
+      "preview_unavailable": "Anteprima non disponibile",
+      "preview_unavailable_body": "Questo allarme utilizza il suono predefinito del sistema che non può essere visualizzato qui. Puoi testarlo impostando un allarme breve.",
+      "playback_error": "Errore di riproduzione",
+      "playback_error_body": "Impossibile riprodurre questo suono di allarme. Il file audio potrebbe essere corrotto o mancante.",
+      "ok": "OK",
+      "no_days_selected": "Nessun giorno selezionato",
+      "everyday": "TUTTI I GIORNI"
+    }
+  }

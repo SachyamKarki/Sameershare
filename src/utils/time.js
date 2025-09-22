@@ -5,6 +5,7 @@
  */
 
 import { DAYS } from '../constants/app';
+import { getLocalizedNumber } from './numberLocalization';
 
 /**
  * Convert 12-hour format to 24-hour format
@@ -29,6 +30,21 @@ export const to24h = (hourStr, minuteStr, ampm) => {
  * @returns {string} Formatted time string
  */
 export const formatTimeLabel = (h12, mStr, ampm) => `${h12}:${mStr} ${ampm}`;
+
+/**
+ * Format time for display with localized numbers and AM/PM
+ * @param {string} h12 - Hour in 12-hour format
+ * @param {string} mStr - Minute string
+ * @param {string} ampm - AM or PM
+ * @param {Function} t - Translation function
+ * @returns {string} Formatted time string with localized numbers and AM/PM
+ */
+export const formatLocalizedTime = (h12, mStr, ampm, t) => {
+  const localizedHour = getLocalizedNumber(h12, t);
+  const localizedMinute = getLocalizedNumber(mStr, t);
+  const localizedAmPm = t(`time.${ampm.toLowerCase()}`);
+  return `${localizedHour}:${localizedMinute} ${localizedAmPm}`;
+};
 
 /**
  * Format milliseconds to MM:SS format

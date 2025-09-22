@@ -241,43 +241,9 @@ class NotificationService {
     displayAmPm,
     days,
   }) {
-    const ids = [];
-    const timeLabel = formatTimeLabel(displayHour, displayMinute, displayAmPm);
-
-    for (const day of days) {
-      const fireDate = nextDateForDayAtTime(day, hour24, minute);
-
-      const id = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: `🚨 Alarm - ${timeLabel}`,
-          body: `It's ${timeLabel}. Your custom alarm is playing!`,
-          categoryIdentifier: NOTIFICATION_CATEGORIES.ALARM_ACTIONS,
-          sound: audioUri ? 'default' : 'default', // Enable notification sound
-          priority: 'max',
-          vibrationPattern: [0, 250, 250, 250],
-          badge: 1,
-          data: {
-            alarmId,
-            audioUri,
-            repeatWeekly: true,
-            day,
-            hour24,
-            minute,
-            scheduledFor: fireDate.getTime(),
-            action: 'ALARM_RINGING', // Add action for app handling
-          },
-        },
-        trigger: { 
-          type: 'date', 
-          date: fireDate,
-          channelId: 'alarm-channel' // Use dedicated alarm channel
-        },
-      });
-
-      ids.push(id);
-    }
-
-    return ids;
+    // 🚫 COMPLETELY DISABLED - This was creating the fake "Alarm - X:XX PM" notification
+    console.log('🚫 Expo notifications DISABLED - Using only native alarms');
+    return []; // Return empty array - no Expo notifications
   }
 
   /**

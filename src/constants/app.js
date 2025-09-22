@@ -5,7 +5,17 @@
  */
 
 // Days of the week
-export const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// Instead of hardcoding strings in UI, use translation keys
+// Canonical day keys used across the app and stored in DB
+export const DAYS = [
+  'sun',
+  'mon',
+  'tue',
+  'wed',
+  'thu',
+  'fri',
+  'sat'
+];
 
 // Storage keys
 export const STORAGE_KEYS = {
@@ -20,7 +30,30 @@ export const AUDIO_CONFIG = {
   PLAYS_IN_SILENT_MODE_IOS: true,
   STAYS_ACTIVE_IN_BACKGROUND: true,
   PLAY_THROUGH_EARPIECE_ANDROID: false,
-  MAX_RECORDING_DURATION: 300000, // 5 minutes in milliseconds
+  MAX_RECORDING_DURATION: 120000, // 2 minutes in milliseconds (production limit)
+};
+
+// Storage settings (Production-Ready)
+export const STORAGE_CONFIG = {
+  MAX_RECORDINGS: 20,
+  MAX_STORAGE_SIZE_MB: 100,
+  MAX_STORAGE_SIZE_BYTES: 100 * 1024 * 1024, // 100MB
+  CACHE_CLEANUP_DAYS: 7,
+  MAX_RECORDING_DURATION_MS: 2 * 60 * 1000, // 2 minutes
+  MIN_RECORDING_DURATION_MS: 3 * 1000, // 3 seconds
+};
+
+// Audio processing configuration for production-ready alarms
+export const AUDIO_PROCESSING_CONFIG = {
+  OPTIMAL_ALARM_VOLUME: 1.0,
+  NIGHT_ALARM_VOLUME: 0.8,
+  HIGH_QUALITY_BITRATE: 256000,
+  MEDIUM_QUALITY_BITRATE: 128000,
+  ACCEPTABLE_QUALITY_BITRATE: 64000,
+  FADE_IN_DURATION: 2000,
+  MAX_ALARM_DURATION: 30000,
+  MAX_AUDIO_FILE_SIZE: 10 * 1024 * 1024,
+  PREFERRED_FILE_SIZE: 5 * 1024 * 1024,
 };
 
 // UI Constants
@@ -33,7 +66,7 @@ export const UI_CONSTANTS = {
 
 // Colors
 export const COLORS = {
-  PRIMARY: '#FFA500', // Orange
+  PRIMARY: '#FFA500',
   BACKGROUND: 'black',
   TEXT_PRIMARY: 'white',
   TEXT_SECONDARY: '#777',
@@ -49,5 +82,5 @@ export const NOTIFICATION_CATEGORIES = {
 
 // Vibration patterns
 export const VIBRATION_PATTERNS = {
-  ALARM: [500, 500], // vibrate 500ms, pause 500ms
+  ALARM: [500, 500],
 };

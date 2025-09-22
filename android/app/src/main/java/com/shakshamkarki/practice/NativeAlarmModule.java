@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -40,6 +41,7 @@ public class NativeAlarmModule extends ReactContextBaseJavaModule {
                 return;
             }
 
+            // Use BroadcastReceiver for better reliability with terminated apps
             Intent intent = new Intent(context, AlarmReceiver.class);
             intent.putExtra("alarmId", alarmId);
             intent.putExtra("audioPath", audioPath);
@@ -51,13 +53,34 @@ public class NativeAlarmModule extends ReactContextBaseJavaModule {
                 intent, 
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
             );
+            
+            // Cancel any existing alarm first to prevent duplicates
+            alarmManager.cancel(pendingIntent);
 
-            // Use setExactAndAllowWhileIdle for precise timing even in doze mode
-            alarmManager.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP, 
-                (long) fireTimeMs, 
-                pendingIntent
-            );
+            // PROFESSIONAL FIX: Use setExactAndAllowWhileIdle for precise timing even in doze mode
+            // CRITICAL: This prevents Android from creating its own system alarm notification
+            try {
+                alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP, 
+                    (long) fireTimeMs, 
+                    pendingIntent
+                );
+                Log.d(TAG, "✅ PROFESSIONAL: Exact alarm scheduled - NO system notification will be created");
+            } catch (SecurityException e) {
+                Log.e(TAG, "❌ SECURITY: Exact alarm permission not granted", e);
+                promise.reject("EXACT_ALARM_PERMISSION_DENIED", "Please grant exact alarm permission in Settings → Apps → Practice → Special access → Alarms & reminders");
+                return;
+            } catch (Exception e) {
+                Log.e(TAG, "❌ Failed to set exact alarm", e);
+                // PROFESSIONAL FIX: Fallback to regular alarm but with explicit logging
+                try {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, (long) fireTimeMs, pendingIntent);
+                    Log.w(TAG, "⚠️ PROFESSIONAL FALLBACK: Using regular alarm (may be delayed, but NO system notification)");
+                } catch (SecurityException se) {
+                    promise.reject("ALARM_PERMISSION_DENIED", "Alarm permissions denied by system");
+                    return;
+                }
+            }
 
             Log.d(TAG, "✅ Native alarm scheduled successfully");
             promise.resolve("Alarm scheduled");
@@ -108,15 +131,18 @@ public class NativeAlarmModule extends ReactContextBaseJavaModule {
             
             Context context = getReactApplicationContext();
             
-            // Create intent for immediate alarm playback
-            Intent intent = new Intent(context, AlarmReceiver.class);
-            intent.putExtra("alarmId", alarmId);
-            intent.putExtra("audioUri", audioUri);
-            intent.putExtra("immediate", true);
+            // Create intent for immediate alarm playback using service directly
+            Intent intent = new Intent(context, AlarmAudioService.class);
+            intent.setAction(AlarmAudioService.ACTION_START_ALARM);
+            intent.putExtra(AlarmAudioService.EXTRA_ALARM_ID, alarmId);
+            intent.putExtra(AlarmAudioService.EXTRA_AUDIO_PATH, audioUri); // Convert audioUri to audioPath
             
-            // Trigger the alarm receiver immediately
-            AlarmReceiver receiver = new AlarmReceiver();
-            receiver.onReceive(context, intent);
+            // Start the alarm service immediately
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
             
             Log.d(TAG, "✅ Immediate alarm started successfully");
             promise.resolve("Immediate alarm started");
@@ -154,14 +180,42 @@ public class NativeAlarmModule extends ReactContextBaseJavaModule {
     public void checkAlarmPermissions(Promise promise) {
         try {
             Context context = getReactApplicationContext();
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             
-            if (alarmManager != null && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
-                boolean canScheduleExactAlarms = alarmManager.canScheduleExactAlarms();
-                promise.resolve(canScheduleExactAlarms);
-            } else {
-                promise.resolve(true); // Older Android versions don't need special permission
+            // Create comprehensive permission status
+            com.facebook.react.bridge.WritableMap permissionStatus = com.facebook.react.bridge.Arguments.createMap();
+            
+            // Check exact alarm permission (Android 12+)
+            boolean canScheduleExactAlarms = BatteryOptimizationHelper.canScheduleExactAlarms(context);
+            permissionStatus.putBoolean("canScheduleExactAlarms", canScheduleExactAlarms);
+            
+            // Check battery optimization status
+            boolean isIgnoringBatteryOptimizations = BatteryOptimizationHelper.isIgnoringBatteryOptimizations(context);
+            permissionStatus.putBoolean("isIgnoringBatteryOptimizations", isIgnoringBatteryOptimizations);
+            
+            // Get OEM-specific instructions
+            String oemInstructions = BatteryOptimizationHelper.getOEMSpecificInstructions();
+            permissionStatus.putString("oemInstructions", oemInstructions);
+            
+            // Check notification permissions
+            android.app.NotificationManager notificationManager = (android.app.NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            boolean notificationsEnabled = true;
+            if (notificationManager != null) {
+                notificationsEnabled = notificationManager.areNotificationsEnabled();
             }
+            permissionStatus.putBoolean("notificationsEnabled", notificationsEnabled);
+            
+            // Overall status
+            boolean allPermissionsGranted = canScheduleExactAlarms && isIgnoringBatteryOptimizations && notificationsEnabled;
+            permissionStatus.putBoolean("allPermissionsGranted", allPermissionsGranted);
+            
+            Log.d(TAG, "📋 Comprehensive permission check completed:");
+            Log.d(TAG, "  - Exact alarms: " + canScheduleExactAlarms);
+            Log.d(TAG, "  - Battery optimization: " + isIgnoringBatteryOptimizations);
+            Log.d(TAG, "  - Notifications: " + notificationsEnabled);
+            Log.d(TAG, "  - All granted: " + allPermissionsGranted);
+            
+            promise.resolve(permissionStatus);
+            
         } catch (Exception e) {
             Log.e(TAG, "Failed to check alarm permissions", e);
             promise.reject("PERMISSION_CHECK_FAILED", e.getMessage());
@@ -232,6 +286,92 @@ public class NativeAlarmModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             Log.e(TAG, "Failed to cancel all alarms", e);
             promise.reject("CANCEL_ALL_FAILED", e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void requestBatteryOptimizationExemption(Promise promise) {
+        try {
+            Context context = getReactApplicationContext();
+            
+            if (!BatteryOptimizationHelper.isIgnoringBatteryOptimizations(context)) {
+                android.content.Intent intent = BatteryOptimizationHelper.createBatteryOptimizationIntent(context);
+                if (intent != null) {
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    promise.resolve("Battery optimization request sent");
+                } else {
+                    promise.resolve("Battery optimization not required on this Android version");
+                }
+            } else {
+                promise.resolve("Already exempted from battery optimization");
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to request battery optimization exemption", e);
+            promise.reject("BATTERY_OPTIMIZATION_REQUEST_FAILED", e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void requestExactAlarmPermission(Promise promise) {
+        try {
+            Context context = getReactApplicationContext();
+            
+            if (!BatteryOptimizationHelper.canScheduleExactAlarms(context)) {
+                android.content.Intent intent = BatteryOptimizationHelper.getExactAlarmPermissionIntent(context);
+                if (intent != null) {
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    promise.resolve("Exact alarm permission request sent");
+                } else {
+                    promise.resolve("Exact alarm permission not required on this Android version");
+                }
+            } else {
+                promise.resolve("Exact alarm permission already granted");
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to request exact alarm permission", e);
+            promise.reject("EXACT_ALARM_REQUEST_FAILED", e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void openAppSettings(Promise promise) {
+        try {
+            Context context = getReactApplicationContext();
+            android.content.Intent intent = BatteryOptimizationHelper.getAppBatterySettingsIntent(context);
+            intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+            promise.resolve("App settings opened");
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open app settings", e);
+            promise.reject("OPEN_SETTINGS_FAILED", e.getMessage());
+        }
+    }
+
+    @ReactMethod
+    public void openAlarmScreen(String alarmId, String alarmTime, String audioPath, Promise promise) {
+        try {
+            Log.d(TAG, "📱 Opening React Native alarm screen for alarm: " + alarmId);
+            
+            // Send event to React Native to navigate to alarm screen
+            com.facebook.react.bridge.WritableMap params = com.facebook.react.bridge.Arguments.createMap();
+            params.putString("alarmId", alarmId);
+            params.putString("alarmTime", alarmTime);
+            params.putString("audioPath", audioPath);
+            
+            getReactApplicationContext()
+                .getJSModule(com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit("openAlarmScreen", params);
+            
+            promise.resolve("Alarm screen navigation sent");
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to open alarm screen", e);
+            promise.reject("OPEN_ALARM_SCREEN_FAILED", e.getMessage());
         }
     }
 }

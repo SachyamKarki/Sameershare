@@ -1,38 +1,44 @@
-// App.js
-import React, { useEffect, useRef } from 'react';
-import { Platform, Vibration, StatusBar } from 'react-native';
+
+import React, { useEffect, useRef, useState, Suspense } from 'react';
+import { Platform, Vibration, StatusBar, DeviceEventEmitter, View, ActivityIndicator, I18nManager } from 'react-native';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
-import * as Notifications from 'expo-notifications';
 import { NavigationContainer } from '@react-navigation/native';
-import { navigationRef, navigateNested } from './navigation/navigation';
+import { navigationRef } from './navigation/navigation';
 import { AlarmProvider } from './context/AlarmContext';
-import TabNavigator from './navigation/navigation';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
+import MainStackNavigator from './navigation/navigation';
+import { AlertContainer, ToastContainer, ErrorBoundary, LanguagePrompt  } from './components';
 import { Audio } from 'expo-av';
 import NotificationService from './services/NotificationService';
-import AlarmActions from './services/AlarmActions';
 import { setAlarmAudioMode, activateSpeakerphone } from './utils/audio';
 import { VIBRATION_PATTERNS } from './constants/app';
-// import { testNativeAlarmFunctionality, logNativeAlarmStatus } from './utils/testNativeAlarms';
+import { performStorageMaintenance } from './utils/storageManager';
+import { initializeDatabase } from './utils/databaseManager';
+import { I18nextProvider } from "react-i18next";
+import i18n from "./i18n/i18n";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function App() {
+// Main App Logic
+const MainApp = () => {
+  const { colors } = useTheme();
   const soundRef = useRef(null);
-  // Note: AlarmRingingScreen removed - now using native Java AlarmActivity
+  const [languageSelected, setLanguageSelected] = useState(false);
 
-  // Play alarm sound loudly and loop forever
+  const handleLanguageSelected = (languageCode) => {
+    console.log('🌍 Language selected in MainApp:', languageCode);
+    setLanguageSelected(true);
+  };
+
   const startAlarmAudio = async (uri) => {
     try {
-      // Note: Native Java system now handles all alarm audio independently
-
-      // Stop previous sound if any
       if (soundRef.current) {
         await soundRef.current.stopAsync();
         await soundRef.current.unloadAsync();
         soundRef.current = null;
       }
 
-      // Force MAXIMUM VOLUME loudspeaker mode
-      await activateSpeakerphone(); // Activate speakerphone first
-      await setAlarmAudioMode(); // Then set alarm audio mode
+      await activateSpeakerphone();
+      await setAlarmAudioMode();
 
       const { sound } = await Audio.Sound.createAsync(
         { uri },
@@ -41,16 +47,12 @@ export default function App() {
 
       soundRef.current = sound;
       await sound.playAsync();
-
-      // Vibrate repeatedly
       Vibration.vibrate(VIBRATION_PATTERNS.ALARM, true);
-
     } catch (error) {
       console.error('Error playing alarm audio:', error);
     }
   };
 
-  // Stop alarm sound + vibration
   const stopAlarmAudio = async () => {
     try {
       if (soundRef.current) {
@@ -64,60 +66,155 @@ export default function App() {
     }
   };
 
-  // Note: Native Java AlarmActivity now handles alarm UI - no React Native screen needed
-
   useEffect(() => {
-    // Initialize Audio Mode for loudspeaker
     const initAudio = async () => {
       try {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false,
           playsInSilentModeIOS: true,
           staysActiveInBackground: true,
-          playThroughEarpieceAndroid: false, // Force loudspeaker
+          playThroughEarpieceAndroid: false,
         });
       } catch (error) {
         console.warn('Failed to set audio mode:', error);
       }
     };
-
     initAudio();
 
-    // Initialize notification service
+    const initDatabase = async () => {
+      try {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        let result = await initializeDatabase();
+        if (!result.success) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          await initializeDatabase();
+        }
+      } catch (error) {
+        console.error('Database initialization error:', error);
+      }
+    };
+    initDatabase();
+
     NotificationService.initialize();
 
-    // Test native alarm functionality (temporarily disabled)
-    // logNativeAlarmStatus();
-    // Uncomment the line below to test alarm scheduling:
-    // testNativeAlarmFunctionality();
+    const initStorageMaintenance = async () => {
+      try {
+        const result = await performStorageMaintenance();
+        if (!result.success) console.warn('Storage maintenance issues:', result.error);
+      } catch (error) {
+        console.warn('Storage maintenance failed:', error);
+      }
+    };
+    setTimeout(initStorageMaintenance, 2000);
 
-    // DISABLED: Notification listeners completely removed
-    // Native Java system handles ALL notifications - no JavaScript notification handling
-    console.log('🚨 NATIVE-ONLY SYSTEM: All notifications handled by Java - JavaScript listeners disabled');
-    
-    const notificationListeners = null; // Completely disabled
+    const alarmScreenListener = DeviceEventEmitter.addListener('openAlarmScreen', (params) => {
+      const openAlarmScreen = () => {
+        if (navigationRef.isReady()) {
+          try {
+            navigationRef.reset({
+              index: 1,
+              routes: [
+                { name: 'Main' },
+                { 
+                  name: 'AlarmRinging', 
+                  params: {
+                    alarmId: params.alarmId,
+                    alarmTime: params.alarmTime,
+                    audioPath: params.audioPath,
+                    isBlocking: true,
+                  }
+                }
+              ],
+            });
+          } catch {
+            navigationRef.navigate('AlarmRinging', {
+              alarmId: params.alarmId,
+              alarmTime: params.alarmTime,
+              audioPath: params.audioPath,
+              isBlocking: true,
+            });
+          }
+        } else setTimeout(openAlarmScreen, 100);
+      };
+      openAlarmScreen();
+    });
 
     return () => {
-      // No cleanup needed - native system handles everything
-      console.log('🚨 App cleanup: Native system continues independently');
+      alarmScreenListener.remove();
     };
   }, []);
 
   return (
-    <AlarmProvider>
-      {/* Professional Status Bar Configuration */}
-      <ExpoStatusBar style="light" backgroundColor="#000000" translucent={false} />
-      {Platform.OS === 'android' && (
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="#000000"
-          translucent={false}
-        />
-      )}
-      
-      <NavigationContainer ref={navigationRef}>
-        <TabNavigator />
-      </NavigationContainer>
-    </AlarmProvider>
+    <ErrorBoundary>
+      <AlarmProvider>
+        <ExpoStatusBar style="light" backgroundColor={colors.statusBarBackground} translucent={false} />
+        <StatusBar barStyle="light-content" backgroundColor={colors.statusBarBackground} translucent={false} />
+
+        <NavigationContainer ref={navigationRef}>
+          <MainStackNavigator />
+        </NavigationContainer>
+
+        <AlertContainer />
+        <ToastContainer />
+        
+    
+        <LanguagePrompt onLanguageSelected={handleLanguageSelected} />
+      </AlarmProvider>
+    </ErrorBoundary>
+  );
+};
+
+// App Wrapper with i18n
+export default function App() {
+  const [languageLoaded, setLanguageLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadLanguage = async () => {
+      try {
+        const savedLang = await AsyncStorage.getItem("userLanguage");
+        const currentLang = savedLang || "en";
+        
+        // Set RTL/LTR based on language
+        const rtlLanguages = ['ar', 'ne']; // Add more RTL languages if needed
+        if (rtlLanguages.includes(currentLang)) {
+          I18nManager.forceRTL(true);
+          I18nManager.allowRTL(true);
+        } else {
+          I18nManager.forceRTL(false);
+          I18nManager.allowRTL(false);
+        }
+        
+        await i18n.changeLanguage(currentLang);
+      } catch (e) {
+        console.warn("Failed to load language:", e);
+      } finally {
+        setLanguageLoaded(true);
+      }
+    };
+    loadLanguage();
+  }, []);
+
+  if (!languageLoaded) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  return (
+    <ErrorBoundary>
+      <ThemeProvider>
+        <I18nextProvider i18n={i18n}>
+          <Suspense fallback={
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+              <ActivityIndicator size="large" />
+            </View>
+          }>
+            <MainApp />
+          </Suspense>
+        </I18nextProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }

@@ -1,3 +1,8 @@
 <resources>
-  <string name="app_name">practice</string>
+    <string name="app_name">LFG</string>
+    <string name="alarm_active_text">ENGINE\'S WARMED UP!\nTIME TO HIT THE ROAD, CHAMP.</string>
+    <string name="stop_alarm">STOP</string>
+    <string name="snooze_alarm">SNOOZE</string>
+    <string name="notif_title">Alarm Ringing</string>
+    <string name="notif_body">Engine\'s warmed up! Time to hit the road, champ.</string>
 </resources>

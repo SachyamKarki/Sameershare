@@ -5,3 +5,4 @@
  */
 
 export { AlarmProvider, useAlarm } from './AlarmContext';
+export { ThemeProvider, useTheme } from './ThemeContext';

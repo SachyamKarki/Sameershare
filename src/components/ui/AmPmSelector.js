@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import { useTheme } from '../../context';
 
 export default function AmPmSelector({ ampm, setAmpm }) {
+  const { colors, darkMode } = useTheme();
   return (
     <View
       style={{
@@ -12,7 +14,7 @@ export default function AmPmSelector({ ampm, setAmpm }) {
         width: 120,
         height: 50,             // height enough for one row
         borderRadius: 8,
-        backgroundColor: '#4B5563',
+        backgroundColor: '#1A1A1A', // Always dark background
         overflow: 'hidden',
       }}
     >
@@ -26,13 +28,13 @@ export default function AmPmSelector({ ampm, setAmpm }) {
               flex: 1,               // equal width for each button
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: isSelected ? '#FFA500' : '#4B5563',
+              backgroundColor: isSelected ? '#FFA500' : '#1A1A1A', // Always dark unselected
               borderRadius: 8,
             }}
           >
             <Text
               style={{
-                color: isSelected ? '#000' : '#D1D5DB',
+                color: isSelected ? '#000' : '#FFFFFF', // Always white text when not selected
                 fontWeight: '400',
                 fontSize: 18,
               }}

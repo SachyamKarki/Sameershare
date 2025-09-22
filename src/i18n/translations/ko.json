@@ -1,0 +1,239 @@
+{
+    "common": {
+      "ok": "확인",
+      "cancel": "취소",
+      "error": "오류",
+      "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "save": "저장",
+      "done": "완료",
+      "success": "성공",
+      "delete": "삭제"
+    },
+    "days": {
+      "mon": "월",
+      "tue": "화",
+      "wed": "수",
+      "thu": "목",
+      "fri": "금",
+      "sat": "토",
+      "sun": "일"
+    },
+    "time": {
+      "hr": "시",
+      "min": "분",
+      "am": "오전",
+      "pm": "오후"
+    },
+    "settings": "설정",
+    "about": {
+      "title": "자동차 알람 정보",
+      "version": "버전",
+      "description": "LFG는 자신의 자동차 소리로 깨어날 수 있는 최초의 앱입니다. 자동차 소리를 녹음하여 사용자 지정 알람으로 설정하세요. 진동, 점진적 볼륨 증가, 설정 가능한 스누즈, 시각적 알림과 같은 고급 기능을 통해 모든 깨어남이 사용자의 선호에 맞춰 조정됩니다. 독특하고 혁신적이며 완전히 사용자 정의 가능한 알람 경험을 즐기세요.",
+      "itemTitle": "앱 정보",
+      "status": "프로덕션 준비 완료"
+    },
+    "device": {
+      "title": "기기 정보",
+      "brand": "브랜드",
+      "model": "모델",
+      "os": "안드로이드 버전",
+      "api": "API 레벨",
+      "memory": "메모리",
+      "error": "기기 정보를 가져올 수 없습니다",
+      "itemTitle": "기기 정보"
+    },
+    "support": {
+      "itemTitle": "문제 보고",
+      "itemDesc": "피드백 보내기 또는 버그 보고",
+      "subject": "자동차 소리 알람 - 문제 보고",
+      "issueDescription": "문제 설명",
+      "steps": "재현 단계",
+      "expected": "예상 동작",
+      "actual": "실제 동작",
+      "emailUnavailableTitle": "메일 앱 사용 불가",
+      "emailUnavailableBody": "문제를 다음으로 수동으로 보내주세요:"
+    },
+    "rate": {
+      "itemTitle": "앱 평가",
+      "itemDesc": "Google Play 스토어에서 평가하기",
+      "title": "앱 평가",
+      "fallback": "Google Play 스토어에서 우리 앱을 평가해 주세요!"
+    },
+    "share": {
+      "itemTitle": "앱 공유",
+      "itemDesc": "친구들에게 이 앱에 대해 알려주세요",
+      "title": "앱 공유",
+      "message": "친구들에게 이 알람 앱에 대해 알려주세요!",
+      "copy": "링크 복사",
+      "copiedTitle": "링크 복사됨",
+      "copiedBody": "다운로드 링크가 클립보드에 복사되었습니다!"
+    },
+    "privacy": {
+      "itemTitle": "개인정보 보호정책",
+      "itemDesc": "데이터 처리 방식",
+      "title": "개인정보 보호정책",
+      "body": "LFG\n\n자동차 소리 알람에서 귀하의 개인정보는 우리에게 중요합니다. ..."
+    },
+    "connect": {
+      "itemTitle": "서비스 약관",
+      "itemDesc": "앱 사용을 위한 약관",
+      "title": "서비스 약관",
+      "body": "자동차 소리 알람에 오신 것을 환영합니다. 다운로드 및 설치로...",
+      "fallback": "웹사이트를 열 수 없습니다. https://lfgburnego.com 을 수동으로 방문해 주세요."
+    },
+    "alarm": {
+      "sound": "알람 소리",
+      "soundDesc": "알람이 울릴 때 오디오 재생",
+      "vibration": "진동",
+      "vibrationDesc": "알람 중 기기 진동",
+      "fadeIn": "부드러운 깨우기",
+      "fadeInDesc": "2초 동안 볼륨을 점진적으로 증가",
+      "volumeBoost": "볼륨 증폭",
+      "volumeBoostDesc": "깊은 잠을 자는 사람을 위한 추가 볼륨",
+      "snooze": "스누즈 기능",
+      "snoozeDesc": "{{duration}}분 동안 스누즈 허용",
+      "setHeader": "알람 설정",
+      "savedTitle": "알람이 성공적으로 저장되었습니다!",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "알람을 저장하지 못했습니다. 다시 시도해 주세요.",
+      "defaultSoundName": "기본 알람 소리"
+    },
+    "battery": {
+      "title": "배터리 최적화",
+      "itemTitle": "배터리 최적화",
+      "message": "신뢰할 수 있는 알람 기능을 위해 이 앱에 대한 배터리 최적화를 비활성화해 주세요.\n\n이는 기기가 깊은 절전 모드에 있을 때도 알람이 작동하도록 보장합니다.",
+      "openSettings": "설정 열기",
+      "alreadyDone": "이미 완료됨",
+      "manualInstructions": "설정 > 앱 > 자동차 알람 > 배터리 > 배터리 최적화 제거로 수동으로 이동해 주세요",
+      "disabled": "배터리 최적화 비활성화됨 - 알람이 안정적으로 작동합니다",
+      "needsDisable": "안정적인 알람을 위해 배터리 최적화를 비활성화해 주세요",
+      "ensureReliability": "깊은 절전 모드에서도 알람이 작동하도록 보장"
+    },
+    "batteryOptimization": {            
+        "title": "배터리 최적화",
+        "itemTitle": "배터리 최적화",
+        "message": "신뢰할 수 있는 알람 기능을 위해 이 앱에 대한 배터리 최적화를 비활성화해 주세요.\n\n이는 기기가 깊은 절전 모드에 있을 때도 알람이 작동하도록 보장합니다.",
+        "ok": "확인",
+        "openSettings": "설정 열기",
+        "alreadyDone": "이미 완료됨",
+        "manualInstructions": "설정 > 앱 > 자동차 알람 > 배터리 > 배터리 최적화 제거로 수동으로 이동해 주세요",
+        "disabled": "배터리 최적화 비활성화됨 - 알람이 안정적으로 작동합니다",
+        "needsDisable": "안정적인 알람을 위해 배터리 최적화를 비활성화해 주세요",
+        "ensureReliability": "깊은 절전 모드에서도 알람이 작동하도록 보장"
+      },
+    "notifications": {
+      "itemTitle": "알림",
+      "enabled": "알람 알림 활성화됨",
+      "disabled": "알람 알림 비활성화됨",
+      "permissionDeniedTitle": "권한 거부됨",
+      "permissionDeniedMessage": "기기 설정에서 알림을 활성화해 주세요"
+    },
+    "settingsCommon": {
+      "title": "설정",
+      "subtitle": "알람 경험을 맞춤 설정하세요",
+      "language": "언어",
+      "notifications": "알림",
+      "batteryOptimization": "배터리 최적화",
+      "deleteRecordings": "모든 녹음 삭제",
+      "about": "소개",
+      "privacy": "개인정보 보호정책",
+      "connect": "서비스 약관",
+      "support": "지원",
+      "rate": "앱 평가",
+      "share": "앱 공유",
+      "deviceInfo": "기기 정보",
+      "ok": "확인",
+      "cancel": "취소",
+      "error": "오류"
+    },
+    "storageManagement": {
+      "title": "저장소",
+      "description": "{{recordings}}개 녹음, {{size}} MB, 상태: {{status}}",
+      "alertTitle": "저장소 정보",
+      "alertMessage": "{{recordings}}개 녹음, {{size}} MB 사용, {{cache}}개 캐시 파일",
+      "status": {
+        "normal": "정상",
+        "moderate": "보통",
+        "high": "높음"
+      }
+    },
+    "recordings": {
+      "title": "녹음",
+      "noRecordingsYet": "아직 녹음이 없습니다",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "홈 탭에서 오디오를 녹음하거나 기존 오디오 파일을 가져오세요",
+      "importAudioFiles": "오디오 파일 가져오기",
+      "renameRecording": "녹음 이름 변경",
+      "enterRecordingName": "녹음 이름을 입력하세요",
+      "deleteRecording": "녹음 삭제",
+      "deleteRecordingConfirmMessage": "이 녹음을 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.",
+      "deleteTitle": "녹음 삭제",
+      "deleteMessage": "이 녹음을 삭제하시겠습니까?",
+      "deleteSuccessTitle": "녹음 삭제됨",
+      "deleteSuccessMessage": "녹음이 성공적으로 삭제되었습니다.",
+      "edit": "편집",
+      "play": "재생",
+      "pause": "일시정지",
+      "setAlarm": "알람 설정",
+      "loading": "로딩 중",
+      "uploadError": "오디오 파일을 업로드할 수 없습니다",
+      "playbackError": "오디오 파일을 재생할 수 없습니다",
+      "renameError": "녹음 이름 변경 중 오류가 발생했습니다. 다시 시도해 주세요.",
+      "updateError": "업데이트 기능이 사용 불가능합니다. 다시 시도해 주세요.",
+      "deleteError": "녹음 삭제 중 오류가 발생했습니다.",
+      "navigationError": "알람 설정으로 이동 중 오류가 발생했습니다.",
+      "importError": "오디오 파일을 가져올 수 없습니다",
+      "importSuccess": "오디오 파일이 성공적으로 가져와졌습니다",
+      "fileMissing": "파일이 없거나 손상됨",
+      "playbackErrorTitle": "재생 오류",
+      "playbackErrorMessage": "녹음을 재생할 수 없습니다. 파일이 손상되었을 수 있습니다.",
+      "errorTitle": "파일 오류",
+      "unnamed": "이름 없는 녹음",
+      "defaultName": "녹음 {{number}}",
+      "lfgAudioDefaultName": "LFG 오디오"
+    },
+    "deleteRecordings": {
+      "title": "모든 녹음 삭제",
+      "confirmMessage": "모든 녹음을 삭제하시겠습니까?",
+      "confirm": "삭제",
+      "successTitle": "녹음 삭제됨",
+      "successMessage": "모든 녹음이 삭제되었습니다"
+    },
+    "languageSelector": {
+      "title": "언어",
+      "confirmMessage": "언어를 변경하시겠습니까?",
+      "confirm": "변경",
+      "successTitle": "언어 변경됨",
+      "successMessage": "언어가 변경되었습니다"
+    },
+    "recorder": {
+      "record": "녹음",
+      "stop": "중지",
+      "stopping": "중지 중...",
+      "upload": "업로드",
+      "import": "가져오기",
+      "or": "또는",
+      "permission_denied": "녹음하려면 마이크 접근 권한이 필요합니다.",
+      "no_recording": "활성 녹음이 없습니다.",
+      "recording_failed": "녹음을 저장하지 못했습니다. 다시 시도해 주세요.",
+      "recording_empty": "녹음이 비어 있습니다. 오디오가 캡처되지 않았습니다. 마이크 접근이 허용되었는지 확인하세요.",
+      "recording_invalid": "녹음이 유효하지 않습니다",
+      "storage_error": "녹음을 영구적으로 저장하지 못했습니다. 다시 시도해 주세요.",
+      "file_too_large": "10MB 미만의 오디오 파일을 선택해 주세요.",
+      "invalid_audio": "유효하지 않은 오디오",
+      "upload_failed": "오디오 파일을 업로드하지 못했습니다. 다시 시도해 주세요.",
+      "import_failed": "오디오 파일을 가져오지 못했습니다. 다시 시도해 주세요."
+    },
+    "alarmlist": {
+      "title": "당신의 알람",
+      "no_alarms": "설정된 알람 없음",
+      "create_first_alarm": "첫 번째 알람을 만들어 시작하세요",
+      "delete": "삭제",
+      "preview_unavailable": "미리보기 불가",
+      "preview_unavailable_body": "이 알람은 시스템 기본 소리를 사용하며, 여기서 미리 볼 수 없습니다. 짧은 알람을 설정하여 테스트할 수 있습니다.",
+      "playback_error": "재생 오류",
+      "playback_error_body": "이 알람 소리를 재생할 수 없습니다. 오디오 파일이 손상되었거나 누락되었을 수 있습니다.",
+      "ok": "확인",
+      "no_days_selected": "선택된 요일 없음",
+      "everyday": "매일"
+    }
+  }

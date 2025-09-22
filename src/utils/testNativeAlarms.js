@@ -73,7 +73,7 @@ export const logNativeAlarmStatus = async () => {
     if (!hasPermissions) {
       console.log('\n🔧 TO FIX:');
       console.log('1. Go to Android Settings');
-      console.log('2. Apps > Practice (your app)');
+      console.log('2. Apps > Alarm Clock (your app)');
       console.log('3. Battery > Unrestricted');
       console.log('4. Special app access > Schedule exact alarms > Allow');
     }

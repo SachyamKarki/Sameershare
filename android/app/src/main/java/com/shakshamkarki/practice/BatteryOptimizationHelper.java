@@ -2,95 +2,150 @@ package com.shakshamkarki.practice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
-import androidx.annotation.RequiresApi;
 
 /**
- * Helper class to manage battery optimization settings for unlimited alarm access
+ * Helper class to handle battery optimization exemptions and OEM-specific restrictions
  */
 public class BatteryOptimizationHelper {
     private static final String TAG = "BatteryOptimizationHelper";
 
     /**
-     * Check if the app is whitelisted from battery optimization
+     * Check if the app is whitelisted from battery optimizations
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean isIgnoringBatteryOptimizations(Context context) {
-        try {
-            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            String packageName = context.getPackageName();
-            boolean isIgnoring = powerManager.isIgnoringBatteryOptimizations(packageName);
-            Log.d(TAG, "Battery optimization ignored: " + isIgnoring + " for package: " + packageName);
-            return isIgnoring;
-        } catch (Exception e) {
-            Log.e(TAG, "Error checking battery optimization status", e);
-            return false;
-        }
-    }
-
-    /**
-     * Request to ignore battery optimizations for unlimited alarm access
-     */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public static Intent createBatteryOptimizationIntent(Context context) {
-        try {
-            String packageName = context.getPackageName();
-            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-            intent.setData(android.net.Uri.parse("package:" + packageName));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Log.d(TAG, "🔋 Creating battery optimization exemption intent for unlimited alarm access");
-            return intent;
-        } catch (Exception e) {
-            Log.e(TAG, "Error creating battery optimization intent", e);
-            return null;
-        }
-    }
-
-    /**
-     * Log current battery optimization status and provide guidance
-     */
-    public static void logBatteryOptimizationStatus(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            boolean isIgnoring = isIgnoringBatteryOptimizations(context);
-            Log.d(TAG, "🔋🔋🔋 BATTERY OPTIMIZATION STATUS 🔋🔋🔋");
-            Log.d(TAG, "App ignoring battery optimization: " + isIgnoring);
-            
-            if (isIgnoring) {
-                Log.d(TAG, "✅ UNLIMITED ALARM ACCESS GRANTED - Battery optimization disabled");
-                Log.d(TAG, "🚨 Alarms will play INDEFINITELY until manually stopped");
-            } else {
-                Log.w(TAG, "⚠️ Battery optimization ENABLED - May limit alarm persistence");
-                Log.w(TAG, "📱 User should disable battery optimization for unlimited alarm access");
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (powerManager != null) {
+                return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
             }
-        } else {
-            Log.d(TAG, "🔋 Battery optimization not applicable (Android < 6.0)");
-            Log.d(TAG, "✅ UNLIMITED ALARM ACCESS available by default");
+        }
+        return true; // Assume true for older versions
+    }
+
+    /**
+     * Request battery optimization exemption
+     */
+    public static Intent createBatteryOptimizationIntent(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            return intent;
+        }
+        return null;
+    }
+
+    /**
+     * Detect OEM and return specific instructions
+     */
+    public static String getOEMSpecificInstructions() {
+        String manufacturer = Build.MANUFACTURER.toLowerCase();
+        String model = Build.MODEL.toLowerCase();
+        
+        Log.d(TAG, "Detected device: " + manufacturer + " " + model);
+        
+        switch (manufacturer) {
+            case "xiaomi":
+                return "Xiaomi Device Detected:\n" +
+                       "1. Go to Settings → Apps → Practice → Battery saver → No restrictions\n" +
+                       "2. Settings → Apps → Practice → Other permissions → Display pop-up windows while running in background → Allow\n" +
+                       "3. Settings → Apps → Practice → Autostart → Enable";
+                       
+            case "huawei":
+            case "honor":
+                return "Huawei/Honor Device Detected:\n" +
+                       "1. Go to Settings → Apps → Practice → Battery → App launch → Manage manually\n" +
+                       "2. Enable: Auto-launch, Secondary launch, Run in background\n" +
+                       "3. Settings → Battery → More battery settings → Sleep mode → Don't close apps";
+                       
+            case "oppo":
+            case "oneplus":
+                return "Oppo/OnePlus Device Detected:\n" +
+                       "1. Go to Settings → Apps → Practice → Battery → Battery optimization → Don't optimize\n" +
+                       "2. Settings → Apps → Practice → App permissions → Allow all permissions\n" +
+                       "3. Settings → Battery → Battery optimization → Practice → Don't optimize";
+                       
+            case "vivo":
+                return "Vivo Device Detected:\n" +
+                       "1. Go to Settings → Apps & permissions → Practice → Battery → High background app consumption → Allow\n" +
+                       "2. Settings → Apps & permissions → Practice → Auto-start → Enable\n" +
+                       "3. Settings → Battery → Background app refresh → Practice → Allow";
+                       
+            case "samsung":
+                return "Samsung Device Detected:\n" +
+                       "1. Go to Settings → Apps → Practice → Battery → Optimize battery usage → Turn off\n" +
+                       "2. Settings → Device care → Battery → App power management → Apps that won't be put to sleep → Add Practice\n" +
+                       "3. Settings → Apps → Practice → Permissions → Allow all permissions";
+                       
+            default:
+                return "For reliable alarms:\n" +
+                       "1. Go to Settings → Apps → Practice → Battery → Don't optimize\n" +
+                       "2. Allow all permissions for the app\n" +
+                       "3. Disable any battery saving features for this app";
         }
     }
 
     /**
-     * Request all necessary permissions for unlimited alarm access
+     * Get intent to open app-specific battery settings
+     */
+    public static Intent getAppBatterySettingsIntent(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", context.getPackageName(), null));
+        return intent;
+    }
+
+    /**
+     * Ensure unlimited alarm access for the app
      */
     public static void ensureUnlimitedAlarmAccess(Context context) {
-        Log.d(TAG, "🔓🔓🔓 ENSURING UNLIMITED ALARM ACCESS 🔓🔓🔓");
-        
-        // Log current status
-        logBatteryOptimizationStatus(context);
-        
-        // Check if we need to request battery optimization exemption
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!isIgnoringBatteryOptimizations(context)) {
-                Log.w(TAG, "🔋 Battery optimization detected - alarm may be limited");
-                Log.w(TAG, "💡 To enable unlimited alarm access:");
-                Log.w(TAG, "   1. Go to Settings > Battery > Battery Optimization");
-                Log.w(TAG, "   2. Find this app and set to 'Don't optimize'");
-                Log.w(TAG, "   3. This ensures alarms play indefinitely");
+        try {
+            Log.d(TAG, "🔓 Checking alarm access permissions...");
+            
+            // Check battery optimization status
+            boolean isOptimized = isIgnoringBatteryOptimizations(context);
+            Log.d(TAG, "📱 Battery optimization status: " + (isOptimized ? "WHITELISTED" : "RESTRICTED"));
+            
+            if (!isOptimized) {
+                Log.w(TAG, "⚠️ App is NOT whitelisted from battery optimizations");
+                Log.w(TAG, "🔧 Recommend showing battery optimization prompt to user");
             }
+            
+            // Log OEM-specific instructions
+            String oemInstructions = getOEMSpecificInstructions();
+            Log.d(TAG, "📋 OEM Instructions: " + oemInstructions);
+            
+            Log.d(TAG, "✅ Alarm access check completed");
+            
+        } catch (Exception e) {
+            Log.e(TAG, "❌ Failed to check alarm access", e);
         }
-        
-        Log.d(TAG, "✅ Unlimited alarm access configuration complete");
+    }
+
+    /**
+     * Check if exact alarm scheduling is allowed (Android 12+)
+     */
+    public static boolean canScheduleExactAlarms(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            android.app.AlarmManager alarmManager = (android.app.AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            return alarmManager != null && alarmManager.canScheduleExactAlarms();
+        }
+        return true; // Always true for older versions
+    }
+
+    /**
+     * Get intent to request exact alarm permission (Android 12+)
+     */
+    public static Intent getExactAlarmPermissionIntent(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            return intent;
+        }
+        return null;
     }
 }

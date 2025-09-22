@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedNumber } from '../../utils/numberLocalization';
 
-const formatTime = (date) => {
+const formatTime = (date, t) => {
   let hours = date.getHours();
   const minutes = date.getMinutes();
   const ampm = hours >= 12 ? 'PM' : 'AM';
   hours = hours % 12 || 12;
   const pad = (n) => n.toString().padStart(2, '0');
-  return `${pad(hours)}:${pad(minutes)} ${ampm}`;
+  const localizedHour = getLocalizedNumber(pad(hours), t);
+  const localizedMinute = getLocalizedNumber(pad(minutes), t);
+  const localizedAmPm = t(`time.${ampm.toLowerCase()}`);
+  return `${localizedHour}:${localizedMinute} ${localizedAmPm}`;
 };
 
 const formatDay = (date) => {
@@ -23,6 +28,7 @@ const formatDate = (date) => {
 
 const TimeDisplay = () => {
   const [now, setNow] = useState(new Date());
+  const { t } = useTranslation();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,7 +41,7 @@ const TimeDisplay = () => {
   return (
     <View style={{ alignItems: 'center', marginTop: 30 }}>
       <Text style={{ fontSize: 28, fontWeight: 'bold', color: 'white' }}>
-        {formatTime(now)} 
+        {formatTime(now, t)} 
       </Text>
       <Text style={{ fontSize: 16, color: 'white', marginTop: 4 }}>
     {formatDay(now)}  | {formatDate(now)}

@@ -1,0 +1,8 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@mipmap/lfglogo_foreground"
+        android:top="20dp"
+        android:bottom="16dp"
+        android:left="22dp"
+        android:right="18dp"/>
+</layer-list>

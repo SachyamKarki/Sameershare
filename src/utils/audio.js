@@ -16,6 +16,9 @@ export const setRecordingAudioMode = async () => {
   await Audio.setAudioModeAsync({
     allowsRecordingIOS: AUDIO_CONFIG.ALLOW_RECORDING_IOS,
     playsInSilentModeIOS: AUDIO_CONFIG.PLAYS_IN_SILENT_MODE_IOS,
+    shouldDuckAndroid: false,
+    playThroughEarpieceAndroid: true, // Use earpiece path during recording for stability
+    staysActiveInBackground: true,
   });
 };
 
@@ -28,7 +31,7 @@ export const setPlaybackAudioMode = async () => {
     allowsRecordingIOS: false,
     playsInSilentModeIOS: AUDIO_CONFIG.PLAYS_IN_SILENT_MODE_IOS,
     shouldDuckAndroid: false,
-    playThroughEarpieceAndroid: AUDIO_CONFIG.PLAY_THROUGH_EARPIECE_ANDROID,
+    playThroughEarpieceAndroid: false, // Force loudspeaker for playback
     staysActiveInBackground: AUDIO_CONFIG.STAYS_ACTIVE_IN_BACKGROUND,
   });
 };

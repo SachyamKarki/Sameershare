@@ -1,0 +1,238 @@
+{
+    "common": {
+      "ok": "OK",
+      "cancel": "Batal",
+      "error": "Ralat",
+      "numbers": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+      "save": "Simpan",
+      "done": "Selesai",
+      "success": "Berjaya"
+    },
+    "days": {
+      "mon": "ISN",
+      "tue": "SEL",
+      "wed": "RAB",
+      "thu": "KHA",
+      "fri": "JUM",
+      "sat": "SAB",
+      "sun": "AHAD"
+    },
+    "time": {
+      "hr": "Jam",
+      "min": "Min",
+      "am": "PG",
+      "pm": "PTG"
+    },
+    "settings": "Tetapan",
+    "about": {
+      "title": "Tentang Penggera Kereta",
+      "version": "Versi",
+      "description": "LFG adalah aplikasi pertama yang membolehkan anda bangun dengan bunyi enjin kereta anda sendiri. Rakam bunyi kereta anda dan tetapkannya sebagai penggera tersuai anda. Dengan ciri-ciri canggih seperti getaran, peningkatan kelantangan secara beransur-ansur, snooze yang boleh dikonfigurasi, dan amaran visual, setiap kebangunan disesuaikan mengikut citarasa anda. Nikmati pengalaman penggera yang unik, inovatif dan sepenuhnya boleh disesuaikan.",
+      "itemTitle": "Maklumat Aplikasi",
+      "status": "Sedia untuk Pengeluaran"
+    },
+    "device": {
+      "title": "Maklumat Peranti",
+      "brand": "Jenama",
+      "model": "Model",
+      "os": "Versi Android",
+      "api": "Tahap API",
+      "memory": "Memori",
+      "error": "Tidak dapat memperoleh maklumat peranti",
+      "itemTitle": "Maklumat Peranti"
+    },
+    "support": {
+      "itemTitle": "Laporkan Isu",
+      "itemDesc": "Hantar maklum balas atau laporkan pepijat",
+      "subject": "Penggera Bunyi Kereta - Laporan Isu",
+      "issueDescription": "Penerangan Isu",
+      "steps": "Langkah untuk Mengulangi",
+      "expected": "Kelakuan yang Diharapkan",
+      "actual": "Kelakuan Sebenar",
+      "emailUnavailableTitle": "Apl Mel Tidak Tersedia",
+      "emailUnavailableBody": "Sila hantar isu anda secara manual ke:"
+    },
+    "rate": {
+      "itemTitle": "Nilaikan Aplikasi",
+      "itemDesc": "Nilaikan kami di Google Play Store",
+      "title": "Nilaikan Aplikasi",
+      "fallback": "Sila nilaikan aplikasi kami di Google Play Store!"
+    },
+    "share": {
+      "itemTitle": "Kongsi Aplikasi",
+      "itemDesc": "Beritahu rakan anda tentang aplikasi ini",
+      "title": "Kongsi Aplikasi",
+      "message": "Beritahu rakan anda tentang aplikasi penggera ini!",
+      "copy": "Salin Pautan",
+      "copiedTitle": "Pautan Disalin",
+      "copiedBody": "Pautan muat turun disalin ke papan klip!"
+    },
+    "privacy": {
+      "itemTitle": "Dasar Privasi",
+      "itemDesc": "Bagaimana kami mengendalikan data anda",
+      "title": "Dasar Privasi",
+      "body": "LFG\n\nDi Penggera Bunyi Kereta, privasi anda penting bagi kami. ..."
+    },
+    "connect": {
+      "itemTitle": "Terma Perkhidmatan",
+      "itemDesc": "Terma dan syarat untuk penggunaan aplikasi",
+      "title": "Terma Perkhidmatan",
+      "body": "Selamat datang ke Penggera Bunyi Kereta. Dengan memuat turun dan memasang...",
+      "fallback": "Website tidak dapat dibuka. Silakan kunjungi https://lfgburnego.com secara manual."
+    },
+    "alarm": {
+      "sound": "Bunyi Penggera",
+      "soundDesc": "Mainkan audio apabila penggera berbunyi",
+      "vibration": "Getaran",
+      "vibrationDesc": "Getarkan peranti semasa penggera",
+      "fadeIn": "Bangun Lembut",
+      "fadeInDesc": "Tingkatkan kelantangan secara beransur-ansur selama 2 saat",
+      "volumeBoost": "Peningkatan Kelantangan",
+      "volumeBoostDesc": "Kelantangan tambahan untuk tidur nyenyak",
+      "snooze": "Fungsi Snooze",
+      "snoozeDesc": "Benarkan snooze selama {{duration}} minit",
+      "setHeader": "TETAPKAN PENGGERA",
+      "savedTitle": "Penggera Berjaya Disimpan!",
+      "savedMessage": "{{time}}\n{{days}}",
+      "saveError": "Gagal menyimpan penggera. Sila cuba lagi.",
+      "defaultSoundName": "Bunyi Penggera Lalai"
+    },
+    "battery": {
+      "title": "Pengoptimuman Bateri",
+      "itemTitle": "Pengoptimuman Bateri",
+      "message": "Untuk fungsi penggera yang boleh dipercayai, sila nyahaktifkan pengoptimuman bateri untuk aplikasi ini.\n\nIni memastikan penggera berfungsi walaupun peranti dalam mod tidur nyenyak.",
+      "openSettings": "Buka Tetapan",
+      "alreadyDone": "Sudah Selesai",
+      "manualInstructions": "Sila pergi secara manual ke Tetapan > Apl > Penggera Kereta > Bateri > Keluarkan daripada pengoptimuman bateri",
+      "disabled": "Pengoptimuman bateri dinyahaktifkan - penggera akan berfungsi dengan boleh dipercayai",
+      "needsDisable": "Sila nyahaktifkan pengoptimuman bateri untuk penggera yang boleh dipercayai",
+      "ensureReliability": "Pastikan penggera berfungsi walaupun dalam mod tidur nyenyak"
+    },
+    "batteryOptimization": {    
+      "title": "Pengoptimuman Bateri",
+      "itemTitle": "Pengoptimuman Bateri",
+      "message": "Untuk fungsi penggera yang boleh dipercayai, sila nyahaktifkan pengoptimuman bateri untuk aplikasi ini.\n\nIni memastikan penggera berfungsi walaupun peranti dalam mod tidur nyenyak.",
+      "ok": "OK",
+      "openSettings": "Buka Tetapan",
+      "alreadyDone": "Sudah Selesai",
+      "manualInstructions": "Sila pergi secara manual ke Tetapan > Apl > Penggera Kereta > Bateri > Keluarkan daripada pengoptimuman bateri",
+      "disabled": "Pengoptimuman bateri dinyahaktifkan - penggera akan berfungsi dengan boleh dipercayai",
+      "needsDisable": "Sila nyahaktifkan pengoptimuman bateri untuk penggera yang boleh dipercayai",
+      "ensureReliability": "Pastikan penggera berfungsi walaupun dalam mod tidur nyenyak"
+    },
+    "notifications": {
+      "itemTitle": "Pemberitahuan",
+      "enabled": "Pemberitahuan penggera diaktifkan",
+      "disabled": "Pemberitahuan penggera dinyahaktifkan",
+      "permissionDeniedTitle": "Kebenaran Ditolak",
+      "permissionDeniedMessage": "Sila aktifkan pemberitahuan dalam tetapan peranti"
+    },
+    "settingsCommon": {
+      "title": "Tetapan",
+      "subtitle": "Sesuaikan pengalaman penggera anda",
+      "language": "Bahasa",
+      "notifications": "Pemberitahuan",
+      "batteryOptimization": "Pengoptimuman Bateri",
+      "deleteRecordings": "Padam Semua Rakaman",
+      "about": "Tentang",
+      "privacy": "Dasar Privasi",
+      "connect": "Terma Perkhidmatan",
+      "support": "Sokongan",
+      "rate": "Nilaikan Aplikasi",
+      "share": "Kongsi Aplikasi",
+      "deviceInfo": "Maklumat Peranti",
+      "ok": "OK",
+      "cancel": "Batal",
+      "error": "Ralat"
+    },
+    "storageManagement": {
+      "title": "Penyimpanan",
+      "description": "{{recordings}} rakaman, {{size}} MB, Status: {{status}}",
+      "alertTitle": "Maklumat Penyimpanan",
+      "alertMessage": "{{recordings}} rakaman, {{size}} MB digunakan, {{cache}} fail cache",
+      "status": {
+        "normal": "Normal",
+        "moderate": "Sederhana",
+        "high": "Tinggi"
+      }
+    },
+    "recordings": {
+      "title": "Rakaman",
+      "noRecordingsYet": "Belum ada rakaman",
+      "startByRecordingAudioInTheHomeTabOrImportExistingAudioFiles": "Mulakan dengan merakam audio di tab Utama atau mengimport fail audio sedia ada",
+      "importAudioFiles": "Import Fail Audio",
+      "renameRecording": "Namakan Semula Rakaman",
+      "enterRecordingName": "Masukkan nama rakaman",
+      "deleteRecording": "Padam Rakaman",
+      "deleteRecordingConfirmMessage": "Adakah anda pasti ingin memadam rakaman ini? Tindakan ini tidak boleh dibatalkan.",
+      "deleteTitle": "Padam Rakaman",
+      "deleteMessage": "Adakah anda pasti ingin memadam rakaman ini?",
+      "deleteSuccessTitle": "Rakaman Dipadam",
+      "deleteSuccessMessage": "Rakaman telah dipadam dengan jayanya.",
+      "edit": "Edit",
+      "play": "Main",
+      "pause": "Jeda",
+      "setAlarm": "Tetapkan Penggera",
+      "loading": "Memuat",
+      "uploadError": "Tidak dapat memuat naik fail audio",
+      "playbackError": "Tidak dapat memainkan fail audio",
+      "renameError": "Ralat menamakan semula rakaman. Sila cuba lagi.",
+      "updateError": "Fungsi kemas kini tidak tersedia. Sila cuba lagi.",
+      "deleteError": "Ralat memadam rakaman.",
+      "navigationError": "Ralat menavigasi ke tetapan penggera.",
+      "importError": "Tidak dapat mengimport fail audio",
+      "importSuccess": "Fail audio diimport dengan jayanya",
+      "fileMissing": "Fail hilang atau rosak",
+      "playbackErrorTitle": "Ralat Main Balik",
+      "playbackErrorMessage": "Tidak dapat memainkan rakaman. Fail mungkin rosak.",
+      "errorTitle": "Ralat Fail",
+      "unnamed": "Rakaman Tanpa Nama",
+      "defaultName": "Rakaman {{number}}",
+      "lfgAudioDefaultName": "Audio LFG"
+    },
+    "deleteRecordings": {
+      "title": "Padam Semua Rakaman",
+      "confirmMessage": "Adakah anda pasti ingin memadam semua rakaman?",
+      "confirm": "Padam",
+      "successTitle": "Rakaman Dipadam",
+      "successMessage": "Semua rakaman telah dipadam"
+    },
+    "languageSelector": {
+      "title": "Bahasa",
+      "confirmMessage": "Adakah anda pasti ingin menukar bahasa?",
+      "confirm": "Tukar",
+      "successTitle": "Bahasa Ditukar",
+      "successMessage": "Bahasa telah ditukar"
+    },
+    "recorder": {
+      "record": "Rakam",
+      "stop": "Henti",
+      "stopping": "Menghentikan...",
+      "upload": "Muat Naik",
+      "import": "Import",
+      "or": "atau",
+      "permission_denied": "Akses mikrofon diperlukan untuk merakam.",
+      "no_recording": "Tiada rakaman aktif.",
+      "recording_failed": "Tidak dapat menyimpan rakaman. Sila cuba lagi.",
+      "recording_empty": "Rakaman kosong. Tiada audio ditangkap. Pastikan akses mikrofon dibenarkan.",
+      "recording_invalid": "Rakaman Tidak Sah",
+      "storage_error": "Gagal menyimpan rakaman secara kekal. Sila cuba lagi.",
+      "file_too_large": "Sila pilih fail audio kurang daripada 10MB.",
+      "invalid_audio": "Audio Tidak Sah",
+      "upload_failed": "Tidak dapat memuat naik fail audio. Sila cuba lagi.",
+      "import_failed": "Tidak dapat mengimport fail audio. Sila cuba lagi."
+    },
+    "alarmlist": {
+      "title": "Penggera Anda",
+      "no_alarms": "Tiada Penggera Ditetapkan",
+      "create_first_alarm": "Cipta penggera pertama anda untuk bermula",
+      "delete": "Padam",
+      "preview_unavailable": "Pratonton Tidak Tersedia",
+      "preview_unavailable_body": "Penggera ini menggunakan bunyi sistem lalai yang tidak boleh dipratonton di sini. Anda boleh mengujinya dengan menetapkan penggera pendek.",
+      "playback_error": "Ralat Main Balik",
+      "playback_error_body": "Tidak dapat memainkan bunyi penggera ini. Fail audio mungkin rosak atau hilang.",
+      "ok": "OK",
+      "no_days_selected": "Tiada hari dipilih",
+      "everyday": "SETIAP HARI"
+    }
+  }

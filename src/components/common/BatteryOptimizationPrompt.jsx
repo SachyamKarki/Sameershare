@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Linking } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Alert, Linking, Platform, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../../context';
+import i18n from '../../i18n/i18n';
 
 const BatteryOptimizationPrompt = () => {
+  const { colors, darkMode } = useTheme();
   const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
@@ -12,127 +14,85 @@ const BatteryOptimizationPrompt = () => {
 
   const checkShouldShowPrompt = async () => {
     try {
-      const dismissed = await AsyncStorage.getItem('batteryOptimizationDismissed');
-      if (!dismissed) {
-        setShowPrompt(true);
+      const alreadyShown = await AsyncStorage.getItem('batteryOptimizationShown');
+      if (!alreadyShown && Platform.OS === 'android') {
+        await AsyncStorage.setItem('batteryOptimizationShown', 'true');
+        // Delay showing the alert for 40 seconds
+        setTimeout(() => {
+          setShowPrompt(true);
+        }, 15000);
       }
     } catch (error) {
       console.log('Error checking battery optimization prompt:', error);
     }
   };
 
-  const handleOptimize = () => {
+  const presentAlert = () => {
+    if (Platform.OS !== 'android') return;
+
+    // Fully translated text using i18n
+    const title = i18n.t('batteryOptimization.title'); // e.g. "Unlimited Alarm Access"
+    const message = i18n.t('batteryOptimization.message');
+    // In your translation JSON, message should include all instructions in the target language
+    const okText = i18n.t('common.ok');
+    const settingsText = i18n.t('batteryOptimization.openSettings'); // e.g. "Open Settings"
+
     Alert.alert(
-      '🔋 Unlimited Alarm Access',
-      'To ensure your alarms work perfectly:\n\n' +
-      '1. Go to Settings > Battery\n' +
-      '2. Find "Battery Optimization" or "App Battery Usage"\n' +
-      '3. Find this app and set to "Don\'t optimize"\n' +
-      '4. This allows unlimited alarm duration\n\n' +
-      'Without this, Android may stop alarms after a few minutes.',
+      title, 
+      message, 
       [
-        { text: 'Later', style: 'cancel' },
         { 
-          text: 'Open Settings', 
+          text: okText, 
+          style: darkMode ? 'default' : 'default',
+          onPress: () => setShowPrompt(false) 
+        },
+        {
+          text: settingsText,
+          style: darkMode ? 'default' : 'default',
           onPress: () => {
-            Linking.openSettings().catch(() => 
-              Alert.alert('Error', 'Cannot open settings automatically. Please navigate manually.')
+            setShowPrompt(false);
+            Linking.openSettings().catch(() =>
+              console.warn('Cannot open settings automatically')
             );
-          }
-        }
-      ]
+          },
+        },
+      ],
+      {
+        // Alert styling options for better dark theme support
+        cancelable: true,
+        onDismiss: () => setShowPrompt(false),
+        // Note: React Native Alert doesn't have direct theme styling,
+        // but it should respect the system theme automatically
+      }
     );
   };
 
-  const handleDismiss = async () => {
-    try {
-      await AsyncStorage.setItem('batteryOptimizationDismissed', 'true');
-      setShowPrompt(false);
-    } catch (error) {
-      console.log('Error dismissing battery optimization prompt:', error);
-      setShowPrompt(false);
+  useEffect(() => {
+    if (showPrompt) {
+      presentAlert();
     }
-  };
+  }, [showPrompt, darkMode]); // Added darkMode dependency
 
-  if (!showPrompt) return null;
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Ionicons name="battery-charging" size={24} color="#4CAF50" />
-        <Text style={styles.title}>Unlimited Alarm Access</Text>
-        <Text style={styles.message}>
-          Enable unlimited alarm duration by disabling battery optimization for this app
-        </Text>
-        
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.optimizeButton} onPress={handleOptimize}>
-            <Text style={styles.optimizeButtonText}>Enable Unlimited Access</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.dismissButton} onPress={handleDismiss}>
-            <Text style={styles.dismissButtonText}>Maybe Later</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
-  );
+  return null;
 };
 
 const styles = StyleSheet.create({
+  // Styles for potential future UI components
   container: {
-    backgroundColor: '#1a1a1a',
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
-    borderLeftWidth: 4,
-    borderLeftColor: '#4CAF50',
-  },
-  content: {
-    alignItems: 'center',
-  },
-  title: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  message: {
-    color: '#ccc',
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 20,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  optimizeButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
     flex: 1,
   },
-  optimizeButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  // These styles would be used if you ever convert this to a custom modal
+  darkContainer: {
+    backgroundColor: '#0A0A0A',
   },
-  dismissButton: {
-    backgroundColor: '#333',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    flex: 1,
+  lightContainer: {
+    backgroundColor: '#FFFFFF',
   },
-  dismissButtonText: {
-    color: '#ccc',
-    fontSize: 14,
-    textAlign: 'center',
+  darkText: {
+    color: '#FFFFFF',
+  },
+  lightText: {
+    color: '#000000',
   },
 });
 

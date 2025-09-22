@@ -1,24 +1,31 @@
 import React from 'react';
 import { View, StatusBar, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { TimeDisplay, Recorder, AlarmList } from '../components';
+import { Recorder, AlarmList, BackgroundComponent, StatusBarComponent } from '../components';
+import ErrorBoundary from '../components/common/ErrorBoundary';
+import { useTheme } from '../context';
 import BatteryOptimizationPrompt from '../components/common/BatteryOptimizationPrompt';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const { colors, darkMode } = useTheme();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'black', paddingHorizontal: 16, paddingTop: 24, paddingBottom: 64 }}>
-      <StatusBar barStyle="light-content" />
-      
-     
-      <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-        <TimeDisplay />
+    <BackgroundComponent>
+      <SafeAreaView style={{ flex: 1, paddingHorizontal: 16, paddingTop: 0, paddingBottom: 64 }}>
+        <StatusBarComponent barStyle="light-content" backgroundColor={colors.background} translucent={false} hidden={false} />
+        
+        <View style={{ flex: 1, justifyContent: 'flex-start' }}>
+          <ErrorBoundary onError={(e) => console.error('Recorder error:', e)} onRetry={() => {}}>
+            <Recorder navigation={navigation} /> 
+          </ErrorBoundary>
+          <AlarmList />
+        </View>
+        
+        {/* Battery Optimization Modal - renders as modal overlay */}
         <BatteryOptimizationPrompt />
-        <Recorder navigation={navigation} /> 
-        <AlarmList />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </BackgroundComponent>
   );
 };
 
